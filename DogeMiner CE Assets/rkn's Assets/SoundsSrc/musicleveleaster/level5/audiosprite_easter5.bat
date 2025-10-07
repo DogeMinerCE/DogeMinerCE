@@ -1,0 +1,1 @@
+audiosprite --output "compiled5/audiosprite_leveleaster5" --path "./snd/" --format "howler" --export "webm,mp3" --vbr:vorbis 4 --bitrate 96 *.wav *.mp3

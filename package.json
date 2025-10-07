@@ -1,0 +1,36 @@
+{
+  "name": "dogeminer-community-edition",
+  "version": "1.0.0",
+  "description": "A modern, browser-based clicker game rebuilt from scratch using JavaScript and HTML",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "python -m http.server 8000",
+    "dev": "python -m http.server 8000"
+  },
+  "keywords": [
+    "clicker",
+    "idle",
+    "game",
+    "dogecoin",
+    "mining",
+    "javascript",
+    "html5",
+    "browser-game"
+  ],
+  "author": "DogeMiner Community Edition Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/dogeminer-community-edition.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/dogeminer-community-edition/issues"
+  },
+  "homepage": "https://github.com/your-username/dogeminer-community-edition#readme",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

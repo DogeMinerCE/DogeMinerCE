@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DogeMiner: Community Edition</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        @font-face {
+            font-family: 'DogeSans';
+            src: url('dogesans/DogeSans-Normal.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'DogeSans';
+            src: url('dogesans/DogeSans-Italic.otf') format('opentype');
+            font-weight: normal;
+            font-style: italic;
+        }
+        @font-face {
+            font-family: 'DogeSans';
+            src: url('dogesans/DogeSansVF.ttf') format('truetype');
+            font-weight: 100 900;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Background (for ads) -->
+    <div id="page-background">
+        <!-- Background Images -->
+        <div id="background-container">
+            <img src="backgrounds/bg1.jpg" alt="Background" id="background-image-1" class="background-image active">
+            <img src="backgrounds/bg3.jpg" alt="Background" id="background-image-2" class="background-image">
+            <img src="backgrounds/bg4.jpg" alt="Background" id="background-image-3" class="background-image">
+            <img src="backgrounds/bg5.jpg" alt="Background" id="background-image-4" class="background-image">
+            <img src="backgrounds/bg6.jpg" alt="Background" id="background-image-5" class="background-image">
+            <img src="backgrounds/bg7.jpg" alt="Background" id="background-image-6" class="background-image">
+            <img src="backgrounds/bg9.jpg" alt="Background" id="background-image-7" class="background-image">
+            <img src="backgrounds/bg-new.jpg" alt="Background" id="background-image-8" class="background-image">
+        </div>
+    </div>
+
+    <!-- Game Container (centered with margins for ads) -->
+    <div id="game-container">
+        <!-- Left Panel - Mining Area -->
+        <div id="left-panel" class="game-panel">
+                <!-- Mining Area -->
+                <div id="mining-area">
+                    <!-- Character with Shadow Circle -->
+                    <div id="character-container">
+                        <img src="assets/items/pickaxes/standard.png" alt="Pickaxe" id="pickaxe">
+                        <img src="assets/general/character/standard.png" alt="Doge" id="main-character">
+                        <div id="character-shadow"></div>
+                    </div>
+                    
+                    <!-- Rock -->
+                    <div id="rock-container">
+                        <img src="assets/general/rocks/earth.png" alt="Rock" id="main-rock">
+                        <div id="click-overlay"></div>
+                    </div>
+
+                    <!-- Particle Effects -->
+                    <div id="particle-container"></div>
+
+                    <!-- Floating Coins -->
+                    <div id="floating-coins"></div>
+                </div>
+
+            <!-- Stats Display -->
+            <div id="stats-display">
+                <div class="stat-item">
+                    <img src="assets/general/dogecoin_70x70.png" alt="Dogecoin" class="stat-icon">
+                    <span id="dogecoin-amount">D 0</span>
+                </div>
+                <div class="stat-item">
+                    <img src="assets/general/persec_icon.png" alt="DPS" class="stat-icon">
+                    <span id="dps-amount">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - UI -->
+        <div id="right-panel" class="game-panel">
+            <!-- Panel Tabs -->
+            <div id="panel-tabs">
+                <div class="tabs-left">
+                    <button class="tab-btn active" onclick="switchMainTab('shop')">
+                        <img src="assets/quickUI/Pickaxe.png" alt="Shop" class="tab-icon">
+                        <span class="tab-text">SHOP</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchMainTab('upgrades')">
+                        <img src="assets/quickUI/ArrowUp.png" alt="Upgrades" class="tab-icon">
+                        <span class="tab-text">UPGRADE</span>
+                    </button>
+                </div>
+                    <div class="tabs-right">
+                        <button class="tab-btn" onclick="switchMainTab('achievements')">
+                            <img src="assets/quickUI/Trophy ICON.png" alt="Achievements" class="tab-icon">
+                        </button>
+                        <button class="tab-btn" onclick="switchMainTab('settings')">
+                            <img src="assets/quickUI/settings icon.png" alt="Settings" class="tab-icon">
+                        </button>
+                    </div>
+            </div>
+
+            <!-- Panel Content -->
+            <div id="panel-content">
+                <!-- Shop Tab -->
+                <div id="shop-tab" class="tab-content active">
+                    <div id="shop-content">
+                        <!-- Shop content will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Upgrades Tab -->
+                <div id="upgrades-tab" class="tab-content">
+                    <div id="upgrades-content">
+                        <!-- Upgrades content will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Achievements Tab -->
+                <div id="achievements-tab" class="tab-content">
+                    <div id="achievements-content">
+                        <!-- Achievements content will be populated by JavaScript -->
+                    </div>
+                    
+                    <div id="stats-content" class="achievements-sub-content">
+                        <div class="stats-grid">
+                            <div class="stat-row">
+                                <span>Total Dogecoins Mined:</span>
+                                <span id="total-mined">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Total Clicks:</span>
+                                <span id="total-clicks">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Helpers Owned:</span>
+                                <span id="helpers-owned">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Current Level:</span>
+                                <span id="current-level">Earth</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Play Time:</span>
+                                <span id="play-time">0s</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Highest DPS:</span>
+                                <span id="highest-dps">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="settings-tab" class="tab-content">
+                    <div class="settings-section">
+                        <h3>Game Settings</h3>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="sound-enabled" checked>
+                                Sound Effects
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="music-enabled" checked>
+                                Background Music
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="notifications-enabled" checked>
+                                Notifications
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="auto-save-enabled" checked>
+                                Auto Save
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h3>Cloud Save</h3>
+                        <div id="cloud-save-section">
+                            <div id="user-info" style="display: none;">
+                                <p id="user-name">Signed in as: </p>
+                                <div class="setting-buttons">
+                                    <button class="setting-btn" onclick="saveToCloud()">Save to Cloud</button>
+                                    <button class="setting-btn" onclick="loadFromCloud()">Load from Cloud</button>
+                                    <button class="setting-btn" onclick="signOutUser()">Sign Out</button>
+                                </div>
+                            </div>
+                            <div id="sign-in-section">
+                                <button class="setting-btn" onclick="signInWithGoogle()">Sign in with Google</button>
+                                <p class="cloud-info">Sign in to save your progress in the cloud and access it from any device!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h3>Local Save/Load</h3>
+                        <div class="setting-buttons">
+                            <button class="setting-btn" onclick="saveGame()">Save Game</button>
+                            <button class="setting-btn" onclick="loadGame()">Load Game</button>
+                            <button class="setting-btn" onclick="exportSave()">Export Save</button>
+                            <button class="setting-btn" onclick="importSave()">Import Save</button>
+                            <button class="setting-btn danger" onclick="resetGame()">Reset Game</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notifications"></div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <img src="DogeMiner CE Logo.png" alt="DogeMiner CE" class="loading-logo">
+            <div class="loading-text">Loading DogeMiner: Community Edition...</div>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6fW_scDVgPVkQCosrV13ye1egRDOlfd4",
+            authDomain: "dogeminer-community-edition.firebaseapp.com",
+            projectId: "dogeminer-community-edition",
+            storageBucket: "dogeminer-community-edition.firebasestorage.app",
+            messagingSenderId: "551478867465",
+            appId: "1:551478867465:web:11a3351d7b913bac136ad8",
+            measurementId: "G-VWD4HSGLNK"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const analytics = getAnalytics(app);
+        const provider = new GoogleAuthProvider();
+
+        // Make Firebase available globally
+        window.firebase = {
+            auth,
+            db,
+            provider,
+            signInWithPopup,
+            signOut,
+            onAuthStateChanged,
+            doc,
+            setDoc,
+            getDoc,
+            collection
+        };
+
+        console.log("Firebase initialized successfully!");
+    </script>
+
+    <!-- Scripts -->
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/shop.js"></script>
+    <script src="js/save.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/cloud-save.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

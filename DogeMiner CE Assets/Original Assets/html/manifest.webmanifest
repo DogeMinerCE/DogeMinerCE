@@ -1,0 +1,15 @@
+{
+  "name": "DogeMiner: Community Edition",
+  "short_name": "DogeMiner: Community Edition",
+  "id": "com.dogeminer.mobile",
+  "description": "",
+  "orientation": "any",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "black",
+  "categories": ["games", "entertainment"],
+  "icons": [{
+        "src": "e9a0dbe023d2607a52794d166c085f0ae22522105772de5771a3f375050e974d-swoledoge with pickaxe with text.png",
+        "sizes": "512x512"
+      }]
+}

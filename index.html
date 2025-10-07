@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DogeMiner: Community Edition</title>
+    <style>
+        @font-face {
+            font-family: 'DogeSans';
+            src: url('play/dogesans/DogeSans-Normal.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'DogeSans';
+            src: url('play/dogesans/DogeSans-Italic.otf') format('opentype');
+            font-weight: normal;
+            font-style: italic;
+        }
+        @font-face {
+            font-family: 'DogeSans';
+            src: url('play/dogesans/DogeSansVF.ttf') format('truetype');
+            font-weight: 100 900;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DogeSans', sans-serif;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Page Background - Full Screen */
+        #page-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        #background-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.9) contrast(1.1);
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .background-image.active {
+            opacity: 1;
+        }
+
+        .landing-container {
+            width: 95%;
+            max-width: 1000px;
+            height: calc(100vh - 40px);
+            margin: 20px auto;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+            padding: 15px;
+            border-radius: 10px;
+            border: 8px solid #dea435;
+            background: linear-gradient(to bottom, rgba(255, 249, 229, 0.95) 0%, rgba(254, 238, 189, 0.95) 17%, rgba(254, 238, 189, 0.95));
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+
+        .landing-header {
+            text-align: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+
+        .landing-logo {
+            width: 800px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .landing-title {
+            font-size: 2.2em;
+            color: #dea435;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 5px;
+        }
+
+        .landing-subtitle {
+            font-size: 1em;
+            color: #8b4513;
+            margin-bottom: 15px;
+        }
+
+        .landing-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .landing-text {
+            flex: 1;
+            font-size: 0.95em;
+            line-height: 1.4;
+            overflow-y: auto;
+        }
+
+        .landing-text p {
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        .landing-text a {
+            color: #dea435;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .landing-text a:hover {
+            text-decoration: underline;
+        }
+
+        .landing-image {
+            flex: 0 0 200px;
+            text-align: center;
+        }
+
+        .landing-doge {
+            width: 180px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-button {
+            display: inline-block;
+            background: linear-gradient(to bottom, rgba(255, 220, 110, 1) 0%, rgba(255, 180, 70, 1) 100%);
+            color: white !important;
+            padding: 19px 54px;
+            font-size: 2.34em;
+            font-weight: 900;
+            text-decoration: none;
+            border-radius: 18px;
+            border: 7px solid rgb(220, 170, 60);
+            box-shadow: none;
+            transition: all 0.3s ease;
+            margin: 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+            text-decoration: none;
+        }
+
+        /* Discord Section */
+        .discord-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .discord-button {
+            display: inline-block;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .discord-button:hover {
+            transform: scale(1.05);
+        }
+
+        .discord-image {
+            width: 200px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .discord-text {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #5865F2;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .play-button:active {
+            transform: scale(1.05);
+        }
+
+        .features {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #dea435;
+        }
+
+        .features h3 {
+            color: #dea435;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features li {
+            padding: 8px 0;
+            color: #444;
+            font-size: 1.1em;
+        }
+
+        .features li:before {
+            content: "🐕 ";
+            margin-right: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #dea435;
+            color: #666;
+            font-size: 0.8em;
+            flex-shrink: 0;
+        }
+
+        /* Cookie Notice */
+        .cookie-notice {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.7em;
+            z-index: 1000;
+            max-width: 200px;
+        }
+
+        .cookie-text a {
+            color: #dea435;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .cookie-text a:hover {
+            color: #f0c040;
+        }
+
+        /* Cookie Modal */
+        .cookie-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .cookie-modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            color: #333;
+        }
+
+        .cookie-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cookie-close:hover,
+        .cookie-close:focus {
+            color: #000;
+        }
+
+        .cookie-modal-content h2 {
+            color: #dea435;
+            margin-bottom: 15px;
+        }
+
+        .cookie-modal-content h3 {
+            color: #dea435;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .cookie-modal-content p {
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 1100px) {
+            .landing-container {
+                width: 95%;
+                margin: 10px auto;
+            }
+            
+            .landing-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .landing-logo {
+                width: 300px;
+            }
+            
+            .landing-title {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+    </head>
+    <body>
+        <!-- Page Background (for ads) -->
+        <div id="page-background">
+            <!-- Background Images -->
+            <div id="background-container">
+                <img src="play/assets/backgrounds/bg1.jpg" alt="Background" id="background-image-1" class="background-image active">
+                <img src="play/assets/backgrounds/bg3.jpg" alt="Background" id="background-image-2" class="background-image">
+                <img src="play/assets/backgrounds/bg4.jpg" alt="Background" id="background-image-3" class="background-image">
+                <img src="play/assets/backgrounds/bg5.jpg" alt="Background" id="background-image-4" class="background-image">
+                <img src="play/assets/backgrounds/bg6.jpg" alt="Background" id="background-image-5" class="background-image">
+                <img src="play/assets/backgrounds/bg7.jpg" alt="Background" id="background-image-6" class="background-image">
+                <img src="play/assets/backgrounds/bg9.jpg" alt="Background" id="background-image-7" class="background-image">
+                <img src="play/assets/backgrounds/bg-new.jpg" alt="Background" id="background-image-8" class="background-image">
+            </div>
+        </div>
+
+        <div class="landing-container">
+        <div class="landing-header">
+            <img src="titlepagelogo.png" alt="DogeMiner CE Logo" class="landing-logo">
+        </div>
+
+        <div class="landing-content">
+            <div style="text-align: center;">
+                <a href="play/index.html" class="play-button">START</a>
+                <div class="discord-section">
+                    <a href="https://discord.gg/dogeminer" target="_blank" rel="noopener" class="discord-button">
+                        <img src="discord-title.png" alt="Discord" class="discord-image">
+                    </a>
+                    <p class="discord-text">Join us on discord and chat<br>with the rest of the community!</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="footer">
+            <p>DogeMiner: Community Edition - Built with ❤️ by the community</p>
+            <p>Based on the original DogeMiner series by rkn</p>
+        </div>
+
+        <!-- Cookie Notice -->
+        <div class="cookie-notice">
+            <span class="cookie-text">This game uses cookies, <a href="#" id="cookie-info-link">click here if you want more info.</a></span>
+        </div>
+
+        <!-- Cookie Info Modal -->
+        <div id="cookie-modal" class="cookie-modal">
+            <div class="cookie-modal-content">
+                <span class="cookie-close">&times;</span>
+                <h2>What Are Cookies</h2>
+                <p>As is common practice with almost all websites, this site uses cookies, which are tiny files that are downloaded to your computer, to improve the user experience. This page describes what information they gather, how they are used and why we sometimes need to store these cookies. We will also share how you can prevent these cookies from being stored however this may downgrade or 'break' certain elements of the sites functionality, such as save games.</p>
+                
+                <p>For more general information on cookies see the Wikipedia article on HTTP Cookies...</p>
+                
+                <h3>How This Site Uses Cookies</h3>
+                <p>This site uses cookies for a variety of reasons detailed below. Unfortunately in most cases there are no industry standard options for disabling cookies without completely disabling the functionality and features they add to this site. It is recommended that you leave on all cookies if you are not sure whether you need them or not in case they are used to provide a service that you use.</p>
+                
+                <h3>Disabling Cookies</h3>
+                <p>You can prevent the setting of cookies by adjusting the settings on your browser (see your browser Help for how to do this). Be aware that disabling cookies will affect the functionality of this and many other websites that you visit. Disabling cookies will usually result in also disabling certain functionality and features of the this site. Therefore it is recommended that you do not disable cookies.</p>
+                
+                <h3>The Cookies This Site Sets</h3>
+                <p>If you sign-in with Google, this site will use cookies for the management of the signup process and general administration. These cookies will usually be deleted when you log out however in some cases they may remain afterwards to remember your site preferences when logged out. This site also uses these Google products: Google Analytics, Google AdSense, Google Tag Manager. This page describes how Google's products use data.</p>
+                
+                <h3>Third Party Cookies</h3>
+                <p>This site uses Google Analytics which is one of the most widespread and trusted analytics solution on the web for helping us to understand how you use the site and ways that we can improve your experience. A feature has been set to anonymize your IP that Analytics return, which means location tracking is less accurate but your privacy is protected.</p>
+                
+                <p>For more information on Google Analytics cookies, see the official Google Analytics page.</p>
+                
+                <p>The Google AdSense service this sites game uses to serve advertising uses their own cookies to serve more relevant ads across the web and limit the number of times that a given ad is shown to you. PS. If you're browsing from the EAA/EU, you will not see personalized ads until a consent management system can be put in place to properly comply with EU laws.</p>
+                
+                <p>For more information on Google AdSense see the official Google AdSense policy FAQs.</p>
+            </div>
+        </div>
+        </div>
+
+        <script>
+            // Background rotation system
+            class BackgroundRotator {
+                constructor() {
+                    this.backgrounds = [
+                        'play/assets/backgrounds/bg1.jpg',
+                        'play/assets/backgrounds/bg3.jpg',
+                        'play/assets/backgrounds/bg4.jpg',
+                        'play/assets/backgrounds/bg5.jpg',
+                        'play/assets/backgrounds/bg6.jpg',
+                        'play/assets/backgrounds/bg7.jpg',
+                        'play/assets/backgrounds/bg9.jpg',
+                        'play/assets/backgrounds/bg-new.jpg'
+                    ];
+                    this.currentBackgroundIndex = 0;
+                    this.backgroundRotationInterval = null;
+                }
+                
+                startBackgroundRotation() {
+                    // Start background rotation every 15 seconds
+                    this.backgroundRotationInterval = setInterval(() => {
+                        this.rotateBackground();
+                    }, 15000);
+                }
+                
+                rotateBackground() {
+                    // Remove active class from current background
+                    const currentImage = document.getElementById(`background-image-${this.currentBackgroundIndex + 1}`);
+                    if (currentImage) {
+                        currentImage.classList.remove('active');
+                    }
+                    
+                    // Move to next background
+                    this.currentBackgroundIndex = (this.currentBackgroundIndex + 1) % this.backgrounds.length;
+                    
+                    // Add active class to new background
+                    const nextImage = document.getElementById(`background-image-${this.currentBackgroundIndex + 1}`);
+                    if (nextImage) {
+                        nextImage.classList.add('active');
+                    }
+                    
+                    console.log(`Background rotated to: ${this.backgrounds[this.currentBackgroundIndex]}`);
+                }
+            }
+
+            // Initialize background rotation when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                const backgroundRotator = new BackgroundRotator();
+                backgroundRotator.startBackgroundRotation();
+                
+                // Cookie modal functionality
+                const cookieModal = document.getElementById('cookie-modal');
+                const cookieLink = document.getElementById('cookie-info-link');
+                const cookieClose = document.querySelector('.cookie-close');
+                
+                cookieLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    cookieModal.style.display = 'block';
+                });
+                
+                cookieClose.addEventListener('click', function() {
+                    cookieModal.style.display = 'none';
+                });
+                
+                window.addEventListener('click', function(event) {
+                    if (event.target === cookieModal) {
+                        cookieModal.style.display = 'none';
+                    }
+                });
+            });
+        </script>
+    </body>
+    </html>

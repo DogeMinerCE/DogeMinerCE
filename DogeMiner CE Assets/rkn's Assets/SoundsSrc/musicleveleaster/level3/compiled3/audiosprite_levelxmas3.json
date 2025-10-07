@@ -1,0 +1,12 @@
+{
+  "urls": [
+    "snd\\audiosprite_leveleaster3.webm",
+    "snd\\audiosprite_leveleaster3.mp3"
+  ],
+  "sprite": {
+    "music": [
+      0,
+      198498.16326530612
+    ]
+  }
+}

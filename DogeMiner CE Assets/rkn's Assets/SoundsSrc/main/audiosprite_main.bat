@@ -1,0 +1,1 @@
+audiosprite --output "compiled/audiosprite_main" --path "./snd/" --format "howler" --export "webm,mp3" *.wav *.mp3
