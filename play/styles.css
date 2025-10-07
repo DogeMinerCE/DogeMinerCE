@@ -1,0 +1,1126 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'DogeSans', sans-serif;
+    background: #f0f0f0;
+    color: #333;
+    overflow: hidden; /* Prevent all scrolling */
+    user-select: none;
+    height: 100vh; /* Fixed height to viewport */
+    width: 100vw; /* Fixed width to viewport */
+    margin: 0;
+    padding: 0;
+}
+
+/* Page Background - Full Screen for Ads */
+#page-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    overflow: hidden;
+}
+
+#background-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.9) contrast(1.1);
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+}
+
+.background-image.active {
+    opacity: 1;
+}
+
+/* Game Container - Centered with Margins for Ads */
+#game-container {
+    position: relative;
+    z-index: 10;
+    width: calc(100vw - 320px); /* Full width minus left and right ad spaces */
+    margin: 20px auto; /* Back to original top margin */
+    margin-left: 160px; /* Left margin for left ad */
+    margin-right: 160px; /* Right margin for right ad */
+    margin-bottom: 10px; /* Reduced bottom margin to extend panels down */
+    padding: 0;
+    display: flex;
+    gap: 4px;
+    /* Extended height for both panels */
+    height: calc(100vh - 150px); /* Extended height */
+    max-height: calc(100vh - 40px); /* Ensure it doesn't exceed viewport */
+    overflow: hidden; /* Prevent internal scrolling */
+}
+
+/* Game Panels - Opaque Rounded Rectangles */
+.game-panel {
+    height: 100%;
+    position: relative;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+#left-panel {
+    width: 630px;
+    flex: none;
+    background: rgba(245, 245, 220, 0.95); /* Light beige with transparency */
+    border: 1px solid #d4af37;
+}
+
+#right-panel {
+    width: 510px; /* Fixed width */
+    flex: none;
+    background: rgba(255, 250, 205, 0.95); /* Light yellow with transparency */
+    border: 1px solid #d4af37;
+    margin-top: 60px; /* Crop the top by 60px */
+    height: calc(100% - 60px); /* Adjust height to account for top margin */
+}
+
+/* Left Panel - Mining Area */
+#mining-area {
+    position: absolute;
+    top: calc(50% + 50px); /* Move down 50 pixels */
+    left: calc(50% - 20px); /* Move left 20 pixels */
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Even closer together */
+    flex-direction: row-reverse; /* This puts Doge on the right */
+}
+
+/* Rock Setup */
+#rock-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    margin-top: 60px; /* Move rock down 60 pixels total */
+}
+
+#rock-container:hover {
+    transform: scale(1.02);
+}
+
+#rock-container:active {
+    transform: scale(0.98);
+}
+
+#main-rock {
+    width: 153px; /* 15% smaller than 180px */
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+    transition: filter 0.2s ease;
+}
+
+#rock-container:hover #main-rock {
+    filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.5));
+}
+
+/* Rock health text removed - simplified mining */
+
+#click-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: transparent;
+}
+
+/* Character Setup */
+#character-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#main-character {
+    width: 120px;
+    height: auto;
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.3));
+    position: relative;
+    z-index: 2;
+    order: 2; /* Middle in flex order */
+    animation: float 3s ease-in-out infinite; /* Floating animation */
+}
+
+#main-character.bounce {
+    animation: bounce 0.2s ease-out; /* Override float animation with bounce */
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+
+#character-shadow {
+    width: 100px; /* Made bigger */
+    height: 30px; /* Made bigger */
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    margin-top: -5px; /* Move shadow up slightly */
+    margin-left: 10px; /* Move shadow to the right */
+    order: 3; /* Ensure it comes last in flex order */
+}
+
+#pickaxe {
+    position: absolute;
+    width: 142px; /* 5% smaller than 150px */
+    height: auto;
+    top: -50px; /* Moved down 10 more pixels (was -60px, now -50px) */
+    right: calc(20% - 50px); /* Moved right 20 more pixels (was -30px, now -50px) */
+    transform: rotate(30deg); /* 30 degree resting angle */
+    transform-origin: 50% 80%; /* Rotate from 80% down the handle instead of bottom */
+    transition: transform 0.1s ease; /* Faster swing animation */
+    z-index: 3; /* Above Doge */
+    order: 1; /* First in flex order */
+}
+
+#pickaxe.swinging {
+    transform: rotate(-65deg); /* Swing to -65 degrees */
+}
+
+
+/* Stats Display - DogeMiner Style */
+#stats-display {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0px;
+    justify-content: center;
+    position: relative;
+}
+
+.stat-item:first-child {
+    margin-top: 30px;
+}
+
+.stat-icon {
+    width: 44px;
+    height: 44px;
+    z-index: 2;
+    position: relative;
+}
+
+.stat-item:nth-child(2) .stat-icon {
+    width: 33px;
+    height: 33px;
+}
+
+.stat-item:first-child .stat-icon {
+    transform: translateX(-10px);
+}
+
+.stat-item span {
+    background: rgb(250, 235, 185);
+    padding: 8px 15px;
+    border-radius: 13px;
+    margin-left: -22px;
+    z-index: 1;
+    position: relative;
+    min-width: 60px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: #8b4513;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.stat-item:nth-child(2) span {
+    padding: 4px 8px;
+    margin-left: -15px;
+}
+
+/* Floating Coins - moved to DogeCoin Effects section */
+
+/* Right Panel - Shop/Menu Area */
+#panel-tabs {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* Align tabs to bottom of container */
+    /* Rounded rectangle background with gradient */
+    background: linear-gradient(to bottom, rgb(160, 155, 140) 50%, rgb(140, 130, 110) 50%);
+    border: 1px solid rgb(140, 130, 110);
+    border-radius: 8px;
+    padding: 4px 2px 0px 2px; /* Remove bottom padding to let tabs sit at bottom */
+    margin: 4px; /* Reduced margin to bring closer to panel edges */
+}
+
+.tabs-left {
+    display: flex;
+    gap: 4px; /* Increased spacing between Shop and Upgrade tabs */
+    margin-left: 10px; /* Move tabs 10px to the right */
+}
+
+.tabs-right {
+    display: flex;
+    gap: 1px;
+    margin-right: 10px; /* Move tabs 10px to the left */
+}
+
+    .tab-btn {
+        /* Button gradient background */
+        background: linear-gradient(to bottom, rgb(255, 220, 115) 50%, rgb(255, 210, 70) 50%);
+        border: 1px solid rgb(185, 150, 65);
+        color: rgb(80, 50, 0); /* Changed to R: 80, G: 50, B: 0 */
+        padding: 12px 18px; /* Made bigger - increased padding */
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        font-weight: 700;
+        font-size: 17px; /* Increased by 3pts from 14px */
+        white-space: nowrap;
+        /* More rounded top, flat bottom */
+        border-radius: 10px 10px 0 0; /* Increased from 6px to 10px */
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+/* Make Shop and Upgrades tabs uniform size */
+.tabs-left .tab-btn {
+    min-width: 100px; /* Reduced to 100px width */
+    justify-content: center; /* Center content within the button */
+}
+
+.tab-icon {
+    width: 24px; /* Made even bigger */
+    height: 24px; /* Made even bigger */
+    filter: brightness(0) saturate(100%) invert(16%) sepia(100%) saturate(1000%) hue-rotate(30deg) brightness(90%) contrast(100%) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+    pointer-events: none; /* Allow clicks to pass through to button */
+}
+
+.tab-text {
+    font-weight: 900; /* Double the boldness (was 700, now 900) */
+    text-transform: uppercase;
+    letter-spacing: -0.5px; /* Tighter letter spacing */
+    pointer-events: none; /* Allow clicks to pass through to button */
+    /* Force boldness with text-stroke since DogeSans might not have bold variants */
+    -webkit-text-stroke: 0.5px currentColor;
+    text-stroke: 0.5px currentColor;
+}
+
+.tab-btn:hover {
+    background: linear-gradient(to bottom, rgb(255, 230, 125) 50%, rgb(255, 220, 80) 50%);
+}
+
+.tab-btn.active {
+    background: white; /* White background when selected */
+    border-color: rgb(185, 150, 65); /* Keep original border color */
+    color: rgb(10, 120, 200); /* Light blue text */
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn.active .tab-icon {
+    filter: brightness(0) saturate(100%) invert(27%) sepia(89%) saturate(1686%) hue-rotate(204deg) brightness(95%) contrast(86%); /* Light blue filter for icon */
+}
+
+#panel-content {
+    height: calc(100% - 40px);
+    overflow-y: auto;
+    padding: 0px;
+    margin-top: -5px; /* Tighter spacing with tabs */
+}
+
+#shop-content {
+    overflow: hidden;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 4px;
+    padding: 4px 4px 8px 4px;
+}
+
+.shop-grid-item {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #d4af37;
+    border-radius: 6px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    outline: 1px solid rgb(135, 125, 105);
+}
+
+.shop-grid-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.shop-item-icon {
+    margin-bottom: 2px;
+}
+
+.shop-item-icon img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.shop-item-title {
+    font-weight: 700;
+    font-size: 9px;
+    color: #8b4513;
+    margin-bottom: 1px;
+    line-height: 1;
+}
+
+.shop-item-price {
+    font-weight: 600;
+    font-size: 7px;
+    color: #d4af37;
+    margin-bottom: 1px;
+    line-height: 1;
+}
+
+.shop-item-stats {
+    font-size: 6px;
+    color: #666;
+    margin-bottom: 1px;
+    line-height: 1;
+}
+
+.shop-item-owned {
+    font-size: 6px;
+    color: #666;
+    margin-bottom: 2px;
+    line-height: 1;
+}
+
+.shop-item-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.empty-text {
+    color: #999;
+    font-style: italic;
+    font-size: 8px;
+    line-height: 1;
+}
+
+.buy-btn {
+    background: #d4af37;
+    color: white;
+    border: none;
+    padding: 2px 6px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 7px;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.buy-btn:hover:not(:disabled) {
+    background: #b8941f;
+    transform: scale(1.05);
+}
+
+.buy-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Shop Styles - DogeMiner Style */
+.shop-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.sub-tab-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #d4af37;
+    color: #8b4513;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.sub-tab-btn:hover {
+    background: rgba(212, 175, 55, 0.2);
+}
+
+.sub-tab-btn.active {
+    background: #d4af37;
+    color: white;
+}
+
+
+/* Shop Items - DogeMiner Style */
+.shop-item {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    border: 2px solid #d4af37;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+.shop-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.shop-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.shop-item-title {
+    color: #8b4513;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.shop-item-price {
+    color: #d4af37;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.shop-item-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.shop-item-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background: rgba(212, 175, 55, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #d4af37;
+}
+
+.shop-item-icon img {
+    width: 40px;
+    height: 40px;
+}
+
+.shop-item-details {
+    flex: 1;
+}
+
+.shop-item-details p {
+    color: #8b4513;
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 5px;
+}
+
+.shop-item-stats {
+    color: #8b4513;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.shop-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.buy-btn {
+    background: #d4af37;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.buy-btn:hover {
+    background: #b8941f;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.buy-btn:disabled {
+    background: #ccc;
+    color: #999;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+
+/* Stats Tab */
+.stats-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    border: 2px solid #d4af37;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+.stat-row span:first-child {
+    color: #8b4513;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.stat-row span:last-child {
+    color: #d4af37;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+/* Settings Tab */
+.settings-section {
+    margin-bottom: 25px;
+}
+
+.settings-section h3 {
+    color: #8b4513;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-bottom: 2px solid #d4af37;
+    padding-bottom: 5px;
+}
+
+.setting-item {
+    margin-bottom: 10px;
+}
+
+.setting-item label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #8b4513;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.setting-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #d4af37;
+}
+
+.setting-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.setting-btn {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #d4af37;
+    color: #8b4513;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 13px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+.setting-btn:hover {
+    background: rgba(212, 175, 55, 0.2);
+    transform: translateY(-1px);
+}
+
+.setting-btn.danger {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.setting-btn.danger:hover {
+    background: rgba(231, 76, 60, 0.1);
+}
+
+/* Cloud Save Styling */
+#cloud-save-section {
+    margin-bottom: 15px;
+}
+
+#user-info {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+#user-name {
+    margin: 0 0 10px 0;
+    font-weight: 500;
+    color: #4caf50;
+}
+
+.cloud-info {
+    font-size: 0.85em;
+    color: #888;
+    margin: 8px 0 0 0;
+    line-height: 1.3;
+}
+
+#sign-in-section {
+    text-align: center;
+}
+
+/* Stats Tab */
+.stats-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    border: 2px solid #d4af37;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+.stat-row span:first-child {
+    color: #8b4513;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.stat-row span:last-child {
+    color: #d4af37;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+/* Achievements Tab */
+#achievements-content {
+    padding: 10px;
+}
+
+/* Settings Tab */
+.settings-section {
+    padding: 10px;
+}
+
+/* Notifications */
+#notifications {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.notification {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #d4af37;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    color: #8b4513;
+    font-weight: 600;
+    transform: translateX(100%);
+    animation: slideIn 0.3s ease forwards;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    max-width: 300px;
+}
+
+@keyframes slideIn {
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Loading Screen */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f5f5dc, #fffacd);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.5s ease;
+}
+
+#loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+    color: #8b4513;
+}
+
+.loading-logo {
+    width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5));
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.loading-text {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    color: #8b4513;
+}
+
+.loading-bar {
+    width: 250px;
+    height: 8px;
+    background: rgba(212, 175, 55, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 2px solid #d4af37;
+}
+
+.loading-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #d4af37, #b8941f);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+/* Animations */
+@keyframes shake {
+    0%, 100% { transform: translateY(0); }
+    25% { transform: translateY(3px); }
+    75% { transform: translateY(-3px); }
+}
+
+.shake {
+    animation: shake 0.1s ease-in-out;
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
+    50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); }
+}
+
+.glow {
+    animation: glow 1s ease-in-out infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    #game-container {
+        width: calc(100% - 20px);
+        margin: 10px auto;
+        padding: 0 10px;
+        flex-direction: column;
+        gap: 10px;
+        height: calc(100vh - 140px); /* Adjust for mobile */
+    }
+    
+    .game-panel {
+        height: auto;
+        min-height: 300px;
+    }
+    
+    #left-panel {
+        min-width: unset;
+        flex: 1;
+        height: 50vh;
+    }
+    
+    #right-panel {
+        min-width: unset;
+        flex: 1;
+        height: 40vh;
+    }
+    
+    #mining-area {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    #main-rock {
+        width: 120px;
+        height: 120px;
+    }
+    
+    #main-character {
+        width: 80px;
+        height: 80px;
+    }
+    
+    #panel-content {
+        height: calc(40vh - 60px);
+    }
+    
+    .tab-btn {
+        font-size: 12px;
+        padding: 10px 6px;
+    }
+}
+
+@media (max-width: 768px) {
+    #game-container {
+        width: calc(100% - 10px);
+        margin: 5px auto;
+        padding: 0 5px;
+        height: calc(100vh - 120px);
+    }
+    
+    #left-panel {
+        height: 45vh;
+    }
+    
+    #right-panel {
+        height: 45vh;
+    }
+    
+    #panel-content {
+        height: calc(45vh - 60px);
+    }
+    
+    .stat-item {
+        padding: 8px 12px;
+    }
+    
+    .stat-item span {
+        font-size: 16px;
+    }
+}
+
+/* Scrollbar Styling */
+#panel-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+#panel-content::-webkit-scrollbar-track {
+    background: rgba(212, 175, 55, 0.1);
+    border-radius: 4px;
+}
+
+#panel-content::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 4px;
+}
+
+#panel-content::-webkit-scrollbar-thumb:hover {
+    background: #b8941f;
+}
+
+/* Ad Space Indicators (for development) */
+@media (min-width: 1025px) {
+    body::before {
+        content: "Left Ad";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 160px;
+        height: 100vh;
+        background: rgba(255, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ff0000;
+        font-size: 12px;
+        z-index: 5;
+        pointer-events: none;
+    }
+    
+    body::after {
+        content: "Right Ad";
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 160px;
+        height: 100vh;
+        background: rgba(255, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ff0000;
+        font-size: 12px;
+        z-index: 5;
+        pointer-events: none;
+    }
+}
+
+/* Bottom Ad Space */
+@media (min-width: 1025px) {
+    #page-background::after {
+        content: "Bottom Ad";
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 120px;
+        background: rgba(0, 255, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #00aa00;
+        font-size: 12px;
+        z-index: 5;
+        pointer-events: none;
+    }
+}
+
+/* Particle Effects */
+#particle-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* DogeCoin Effects - Fresh Implementation */
+#floating-coins {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 15;
+}
+
+.earth-particle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+    animation: particle-fly 0.6s ease-out forwards;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes particle-fly {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    50% {
+        opacity: 0.8;
+        transform: translate(calc(-50% + var(--dx) * 0.5), calc(-50% + var(--dy) * 0.5)) scale(0.8) rotate(180deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.3) rotate(360deg);
+    }
+}

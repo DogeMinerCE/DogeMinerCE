@@ -1,0 +1,270 @@
+airship1 rocket upgrade
+airship2 golden rockets
+airship3 diamond rockets
+airship4 special
+
+bases3 gold
+bases4 diamond
+bases5 special
+
+djkittenz4 gold
+djkittenz5 diamond
+djkittenz6 special
+
+dogecar4 gold
+dogecar5 diamond
+dogecar6 special
+
+
+dogegate2 diamond
+dogegate3 special
+
+dogestar2 diamond
+dogestar3 special
+
+
+flyingdoge3 golden rockets
+flyingdoge4 diamond rockets
+flyingdoge5 special
+
+
+jupiterbase2 ai control system
+jupiterbase3 golden <- låsa upp dessa samtidigt som ai i guess?
+jupiterbase4 diamond <- låsa upp dessa samtidigt som ai i guess?
+jupiterbase5 special
+
+
+kennels7 gold
+kennels8 diamond
+kennels9 special
+
+
+kittens7 gold
+kittens8 diamond
+kittens9 special
+
+
+marsbase4 gold
+marsbase5 diamond
+marsbase6 special
+
+moonshibe4 diamond
+moonshibe5 special
+
+partyshibe4 golden shirts
+partyshibe5 diamond shirts
+partyshibe6 special
+
+rigs3 diamond
+rigs4 special
+
+
+roboshibe3 golden <- lås upp samtidigt som ai
+roboshibe4 diamond <- lås upp samtidigt som ai
+roboshibe5 special
+
+rockets6 gold helmet
+rockets7 diamond helmet
+rockets8 special
+
++marsrocket1 gold
+marsrocket2 diamond
+marsrocket3 special
+
++juprocket1 gold
+juprocket2 diamond
+juprocket3 special
+
+seeker2 more golden
+seeker3 diamond
+seeker4 special
+
+shibes6 gold helmet
+shibes7 diamond helmet
+shibes8 special
+
+spacebass2 diamond
+spacebass3 special
+
+supershibe2 golden helmet
+supershibe3 diamond helmet
+supershibe4 special
+
+tardogeis2 golden rockets
+tardogeis3 diamond rockets
+tardogeis4 special
+
+titanbase2 diamond
+titanbase3 special
+
+walker2 diamond hull
+walker3 speical
+
+notdone cus weird>
+curiosidoge
+
+------- new icons
+
+helmets-gold
+helmets-diamond
+helmets-special
+
+d-d (gold but flat so less "bling")
+diamond-d
+special-d
+
+(single rocket)
+goldrocket
+diamondrocket
+specialrocket
+
+(2 shiny rockets)
+goldrockets
+diamondrockets
+rockets-special
+
+specialbars
+
+specialdarkcoin
+diamonddarkcoin
+goldendarkcoin
+
+
+diamondbonuscoin <- unlock after DIA mission as better bonuscoin (+1 diamond per take too)
+specialbonuscoin <- unlock after BP found as even better bonuscoin (+5 diamond per take?)
+
+specialmystery
+diamondmystery
+specialsuperfortune
+
+goldenrig
+diamondrig
+specialrig
+
+---new special metal from blueprint names?
+
+# random namnförslag på den ultimata metallen:
+
+Hypervibranium ??
+Supervibranium?
+Ultravibranium?
+
+Epicium
+Epicicium
+Epictorium
+Epictanium (epic vore passande eftersom det blev en lila färg + mörkare halvcirklar. då kanske de tror det finns en legendarium)
+Unobtanium (tuff men lite tråkig när man har helt 'free reign' över vad det ska heta liksom)
+Superbium
+Superbranium (haha superbra, var inte meningen, tänkte på viBRAnium)
+Superium
+Superiorium
+Impossiblium
+Hawktainium/Hawkonium/Hawkingium, "named after stephen hawking"
+Unbreakium
+Kingium
+Queenium
+Apelsinium
+Aeternium (aeternus = latin for everlasting :P)
+Indestructium
+Utopium
+Hyperium
+Hypertopium
+Unbrokenium
+Unbendabletopium (...)
+Vividium
+Adamanibranium
+Adamabranium (adamantium+vibranium, +"Adama" bsg reference)
+Synapsium
+Intellectium (like its intelligent??? deep)
+Matterium
+Anti-Antimatteriumum
+Exoticium
+Exoticmateriallium
+Titanium #2
+New Titanium
+Graphenium
+Micrographenetium
+Bestestium
+Strongestium
+Obtanium
+Obtained-Unobtanium
+SuperUnobtanium (haha)
+Lovetopium (wow)
+Universium
+Universalium 
+Universalum (amazing)
+Marvelium
+Destronium
+Destructonium (..side plot lines??)
+Destroynium
+Datonium
+Moonium
+Wheretowithdrawium
+Withdrawium
+Nowithdrawalsium
+Enforcium
+Blockchainium
+Superduperamazingium
+Thestrongestmetalium
+Strongestmetalium
+Stronger-than-diamond-ium (lol)
+Maximum (omg so rad)
+Maximalium
+Hypermaximalum
+
+
+# Elon specific
+Sexium (too short for ol' musky)
+Sexytopium (typical musk) or s3xytopium, sexydium, sexybranium, sexymantium, 
+SpaceXytopium
+Teslium
+Elonotopium
+Musk, by Musk
+Hard, by Musk
+
+
+# doge-relaterade
+Dogeminerium
+Dogeminertopium
+Dogecoinium
+Legendarium
+Wowium
+Amazeium
+Awesomium
+Awesometopium
+Reallyhardium
+Veryhardium (not bad actually, passar spelets humor lite)
+Muchhardium
+Suchstrongium
+Dogebestium, as a tribute to the finder of the blueprint,
+Dogegoodium
+Dogeranium
+Dogetanium (pretty good acctually)
+Dogeversium
+Dogemetal (...)
+
+
+-- Att det låter coolt eller passar spelets humor eller tema är nog bättre än en bra referens iaf
+
+# Something Iain M. Banksy?
+Displaceallium
+Gridfirium
+Firegridium
+Culturium
+Special Circumstansium
+The Metal of Special Circumstances, or M.O.S.C / MoSC / TMOSC / The MoSC / ??? MSC ??? MSC not that bad, men de lär ju glömma vad det betyder om man bara använder förkortningen. fast man kan iof då använda Special Circumstaces för många upgradebeskrivningar (till någon vinst ? )
+
+####
+
+-When figuring out bp, dont instantly unlock upgrades. It needs refining and a name, so let some news tell the stories first.
+?? What criteria to set for the news, and the final popup where the name is introduced and upgradess become unlocked?
+
+News:
+
+Dancer, Thinker and recently, Cyborg Elon, has broken new ground in physics today. By solving the ancient blueprints earlier found on Titan, according to many sources, the blueprints depict a new metal. Elon tweeted about it today, his tweet: "Def. stronger composition than both Vibranium and Adamantium. Pondering what to call it, its name wasn't in the manual."
+
+More news regarding this new metal found by Elon. The public twitter-sphere has taken upon itself to vote on the name of the new metal.
+
+So far, the leading suggestion is "Metal McMetalface", second only to "Really Hard Metal McMetalface". We were unable to reach Elon for a comment on the matter.
+
+a popup about the name being chosen (not by the public probably).
