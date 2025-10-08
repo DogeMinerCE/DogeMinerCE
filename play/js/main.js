@@ -10,6 +10,8 @@ async function initializeGame() {
         
         // Initialize game instance
         game = new DogeMinerGame();
+        window.game = game; // Make game globally available
+        console.log('Game initialized and assigned to window.game:', window.game);
         updateLoadingProgress(30);
         
         // Initialize managers
@@ -33,8 +35,10 @@ async function initializeGame() {
         
         // Initialize cloud save manager after game is ready
         setTimeout(() => {
+            console.log('Initializing CloudSaveManager, window.game available:', !!window.game);
             cloudSaveManager = new CloudSaveManager();
             window.cloudSaveManager = cloudSaveManager;
+            console.log('CloudSaveManager initialized');
         }, 100);
         updateLoadingProgress(95);
         
