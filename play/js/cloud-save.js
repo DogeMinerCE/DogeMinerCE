@@ -236,10 +236,14 @@ class CloudSaveManager {
         // Get the current game instance
         console.log('Getting game state...');
         console.log('window.game exists:', typeof window.game !== 'undefined');
+        console.log('window.game is null:', window.game === null);
+        console.log('window.game is undefined:', window.game === undefined);
+        console.log('window.game type:', typeof window.game);
         console.log('window.game:', window.game);
+        console.log('window.game.dogecoins:', window.game?.dogecoins);
         
         // Wait a bit for game to be ready if it's not available yet
-        if (typeof window.game === 'undefined' || !window.game) {
+        if (typeof window.game === 'undefined' || window.game === null || window.game === undefined) {
             console.log('Game not available yet, waiting...');
             return null;
         }
