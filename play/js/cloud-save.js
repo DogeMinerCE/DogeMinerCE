@@ -350,5 +350,9 @@ function loadFromCloud() {
     }
 }
 
-// CloudSaveManager is now initialized in main.js after game is ready
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    cloudSaveManager = new CloudSaveManager();
+    window.cloudSaveManager = cloudSaveManager;
+});
 

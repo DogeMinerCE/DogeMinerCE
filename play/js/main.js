@@ -10,8 +10,6 @@ async function initializeGame() {
         
         // Initialize game instance
         game = new DogeMinerGame();
-        window.game = game; // Make game globally available
-        console.log('Game initialized and assigned to window.game:', window.game);
         updateLoadingProgress(30);
         
         // Initialize managers
@@ -33,13 +31,7 @@ async function initializeGame() {
             notificationManager.showInfo('Welcome to DogeMiner: Community Edition!');
         }
         
-        // Initialize cloud save manager after game is ready
-        setTimeout(() => {
-            console.log('Initializing CloudSaveManager, window.game available:', !!window.game);
-            cloudSaveManager = new CloudSaveManager();
-            window.cloudSaveManager = cloudSaveManager;
-            console.log('CloudSaveManager initialized');
-        }, 100);
+        // CloudSaveManager will be initialized by cloud-save.js
         updateLoadingProgress(95);
         
         updateLoadingProgress(100);
@@ -48,6 +40,8 @@ async function initializeGame() {
         setTimeout(() => {
             hideLoadingScreen();
             game.isPlaying = true;
+            // Make game globally available for cloud saves
+            window.game = game;
             notificationManager.showSuccess('Game loaded successfully!');
         }, 500);
         
@@ -372,9 +366,4 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// Export for debugging
-window.game = game;
-window.uiManager = uiManager;
-window.shopManager = shopManager;
-window.saveManager = saveManager;
-window.notificationManager = notificationManager;
+// Global variables are now properly declared at the top of the file
