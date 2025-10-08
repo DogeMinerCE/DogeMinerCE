@@ -284,26 +284,42 @@ class CloudSaveManager {
 let cloudSaveManager;
 
 function signInWithGoogle() {
-    if (cloudSaveManager) {
+    if (window.cloudSaveManager) {
+        window.cloudSaveManager.signInWithGoogle();
+    } else if (cloudSaveManager) {
         cloudSaveManager.signInWithGoogle();
+    } else {
+        console.error('CloudSaveManager not initialized');
     }
 }
 
 function signOutUser() {
-    if (cloudSaveManager) {
+    if (window.cloudSaveManager) {
+        window.cloudSaveManager.signOutUser();
+    } else if (cloudSaveManager) {
         cloudSaveManager.signOutUser();
+    } else {
+        console.error('CloudSaveManager not initialized');
     }
 }
 
 function saveToCloud() {
-    if (cloudSaveManager) {
+    if (window.cloudSaveManager) {
+        window.cloudSaveManager.saveToCloud();
+    } else if (cloudSaveManager) {
         cloudSaveManager.saveToCloud();
+    } else {
+        console.error('CloudSaveManager not initialized');
     }
 }
 
 function loadFromCloud() {
-    if (cloudSaveManager) {
+    if (window.cloudSaveManager) {
+        window.cloudSaveManager.loadFromCloud();
+    } else if (cloudSaveManager) {
         cloudSaveManager.loadFromCloud();
+    } else {
+        console.error('CloudSaveManager not initialized');
     }
 }
 

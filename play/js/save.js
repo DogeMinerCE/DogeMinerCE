@@ -78,7 +78,7 @@ class SaveManager {
             const saveData = JSON.parse(saveString);
             this.applySaveData(saveData);
             
-            this.game.showNotification('Game loaded successfully!');
+            // Notification handled by main.js
             console.log('Game loaded:', saveData);
             return true;
         } catch (error) {

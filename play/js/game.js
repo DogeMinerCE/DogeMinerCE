@@ -855,7 +855,7 @@ class DogeMinerGame {
                 
                 this.updateDPS();
                 this.updateUI();
-                this.showNotification('Game loaded successfully!');
+                // Notification handled by main.js
                 return true;
             } catch (e) {
                 console.error('Error loading save data:', e);
