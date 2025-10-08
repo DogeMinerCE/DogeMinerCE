@@ -18,6 +18,11 @@ class CloudSaveManager {
         window.firebase.onAuthStateChanged(window.firebase.auth, (user) => {
             this.currentUser = user;
             this.updateUI();
+            
+            // Automatically load from cloud when user signs in
+            if (user && window.game) {
+                this.loadFromCloudSilent();
+            }
         });
 
         this.isInitialized = true;
@@ -123,6 +128,30 @@ class CloudSaveManager {
         }
     }
 
+    async saveToCloudSilent() {
+        if (!this.currentUser) {
+            return;
+        }
+
+        try {
+            // Get current game state
+            const gameData = this.getGameState();
+            
+            // Save to Firestore silently
+            const userDocRef = window.firebase.doc(window.firebase.db, 'users', this.currentUser.uid);
+            await window.firebase.setDoc(userDocRef, {
+                gameData: gameData,
+                lastSaved: new Date().toISOString(),
+                version: '1.0.0'
+            }, { merge: true });
+
+            console.log('Game auto-saved to cloud');
+            
+        } catch (error) {
+            console.error('Silent cloud save error:', error);
+        }
+    }
+
     async loadFromCloud() {
         if (!this.currentUser) {
             if (window.notificationManager) {
@@ -163,6 +192,29 @@ class CloudSaveManager {
             if (window.notificationManager) {
                 window.notificationManager.showError('Failed to load from cloud. Please try again.');
             }
+        }
+    }
+
+    async loadFromCloudSilent() {
+        if (!this.currentUser) {
+            return;
+        }
+
+        try {
+            // Get data from Firestore
+            const userDocRef = window.firebase.doc(window.firebase.db, 'users', this.currentUser.uid);
+            const docSnap = await window.firebase.getDoc(userDocRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                if (data.gameData) {
+                    this.loadGameState(data.gameData);
+                    console.log('Game auto-loaded from cloud');
+                }
+            }
+            
+        } catch (error) {
+            console.error('Silent cloud load error:', error);
         }
     }
 
@@ -258,5 +310,6 @@ function loadFromCloud() {
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     cloudSaveManager = new CloudSaveManager();
+    window.cloudSaveManager = cloudSaveManager;
 });
 

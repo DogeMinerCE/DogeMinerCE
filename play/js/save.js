@@ -226,6 +226,11 @@ class SaveManager {
     autoSave() {
         if (this.game.autoSaveEnabled !== false) {
             this.saveGame();
+            
+            // Also save to cloud if user is signed in
+            if (window.cloudSaveManager && window.cloudSaveManager.currentUser) {
+                window.cloudSaveManager.saveToCloudSilent();
+            }
         }
     }
     
