@@ -238,31 +238,33 @@ class CloudSaveManager {
         console.log('window.game exists:', typeof window.game !== 'undefined');
         console.log('window.game:', window.game);
         
-        if (typeof window.game !== 'undefined' && window.game) {
-            const gameData = {
-                dogecoins: window.game.dogecoins,
-                dps: window.game.dps,
-                helpers: window.game.helpers,
-                upgrades: window.game.upgrades,
-                totalMined: window.game.totalMined,
-                totalClicks: window.game.totalClicks,
-                currentLevel: window.game.currentLevel,
-                currentPickaxe: window.game.currentPickaxe,
-                playTime: window.game.playTime,
-                highestDps: window.game.highestDps,
-                achievements: window.game.achievements || {},
-                settings: {
-                    soundEnabled: window.game.soundEnabled,
-                    musicEnabled: window.game.musicEnabled,
-                    notificationsEnabled: window.game.notificationsEnabled,
-                    autoSaveEnabled: window.game.autoSaveEnabled
-                }
-            };
-            console.log('Game data to save:', gameData);
-            return gameData;
+        // Wait a bit for game to be ready if it's not available yet
+        if (typeof window.game === 'undefined' || !window.game) {
+            console.log('Game not available yet, waiting...');
+            return null;
         }
-        console.log('Game not available, returning null');
-        return null;
+        
+        const gameData = {
+            dogecoins: window.game.dogecoins || 0,
+            dps: window.game.dps || 0,
+            helpers: window.game.helpers || {},
+            upgrades: window.game.upgrades || {},
+            totalMined: window.game.totalMined || 0,
+            totalClicks: window.game.totalClicks || 0,
+            currentLevel: window.game.currentLevel || 'earth',
+            currentPickaxe: window.game.currentPickaxe || 'standard',
+            playTime: window.game.playTime || 0,
+            highestDps: window.game.highestDps || 0,
+            achievements: window.game.achievements || {},
+            settings: {
+                soundEnabled: window.game.soundEnabled !== false,
+                musicEnabled: window.game.musicEnabled !== false,
+                notificationsEnabled: window.game.notificationsEnabled !== false,
+                autoSaveEnabled: window.game.autoSaveEnabled !== false
+            }
+        };
+        console.log('Game data to save:', gameData);
+        return gameData;
     }
 
     loadGameState(gameData) {
@@ -344,9 +346,5 @@ function loadFromCloud() {
     }
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    cloudSaveManager = new CloudSaveManager();
-    window.cloudSaveManager = cloudSaveManager;
-});
+// CloudSaveManager is now initialized in main.js after game is ready
 

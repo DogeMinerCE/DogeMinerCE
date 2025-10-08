@@ -227,8 +227,8 @@ class SaveManager {
         if (this.game.autoSaveEnabled !== false) {
             this.saveGame();
             
-            // Also save to cloud if user is signed in
-            if (window.cloudSaveManager && window.cloudSaveManager.currentUser) {
+            // Also save to cloud if user is signed in and game is ready
+            if (window.cloudSaveManager && window.cloudSaveManager.currentUser && window.game) {
                 window.cloudSaveManager.saveToCloudSilent();
             }
         }

@@ -31,8 +31,11 @@ async function initializeGame() {
             notificationManager.showInfo('Welcome to DogeMiner: Community Edition!');
         }
         
-        // Initialize cloud save manager
-        cloudSaveManager = new CloudSaveManager();
+        // Initialize cloud save manager after game is ready
+        setTimeout(() => {
+            cloudSaveManager = new CloudSaveManager();
+            window.cloudSaveManager = cloudSaveManager;
+        }, 100);
         updateLoadingProgress(95);
         
         updateLoadingProgress(100);
