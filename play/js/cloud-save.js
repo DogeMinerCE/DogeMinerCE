@@ -107,6 +107,14 @@ class CloudSaveManager {
             
             // Get current game state
             const gameData = this.getGameState();
+            console.log('Manual save - gameData:', gameData);
+            
+            if (gameData === null) {
+                if (window.notificationManager) {
+                    window.notificationManager.showError('Cannot save: Game not initialized');
+                }
+                return;
+            }
             
             // Save to Firestore
             const userDocRef = window.firebase.doc(window.firebase.db, 'users', this.currentUser.uid);
@@ -136,6 +144,12 @@ class CloudSaveManager {
         try {
             // Get current game state
             const gameData = this.getGameState();
+            console.log('Silent save - gameData:', gameData);
+            
+            if (gameData === null) {
+                console.error('Cannot save to cloud: gameData is null');
+                return;
+            }
             
             // Save to Firestore silently
             const userDocRef = window.firebase.doc(window.firebase.db, 'users', this.currentUser.uid);
@@ -220,8 +234,12 @@ class CloudSaveManager {
 
     getGameState() {
         // Get the current game instance
+        console.log('Getting game state...');
+        console.log('window.game exists:', typeof window.game !== 'undefined');
+        console.log('window.game:', window.game);
+        
         if (typeof window.game !== 'undefined' && window.game) {
-            return {
+            const gameData = {
                 dogecoins: window.game.dogecoins,
                 dps: window.game.dps,
                 helpers: window.game.helpers,
@@ -240,7 +258,10 @@ class CloudSaveManager {
                     autoSaveEnabled: window.game.autoSaveEnabled
                 }
             };
+            console.log('Game data to save:', gameData);
+            return gameData;
         }
+        console.log('Game not available, returning null');
         return null;
     }
 
