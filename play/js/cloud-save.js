@@ -44,11 +44,15 @@ class CloudSaveManager {
     async signInWithGoogle() {
         try {
             if (!this.isInitialized) {
-                showNotification('Firebase is still initializing. Please wait a moment.', 'warning');
+                if (window.notificationManager) {
+                    window.notificationManager.showWarning('Firebase is still initializing. Please wait a moment.');
+                }
                 return;
             }
 
-            showNotification('Signing in with Google...', 'info');
+            if (window.notificationManager) {
+                window.notificationManager.showInfo('Signing in with Google...');
+            }
             
             const result = await window.firebase.signInWithPopup(
                 window.firebase.auth, 
@@ -56,11 +60,15 @@ class CloudSaveManager {
             );
             
             this.currentUser = result.user;
-            showNotification(`Welcome, ${this.currentUser.displayName}!`, 'success');
+            if (window.notificationManager) {
+                window.notificationManager.showSuccess(`Welcome, ${this.currentUser.displayName}!`);
+            }
             
         } catch (error) {
             console.error('Sign in error:', error);
-            showNotification('Failed to sign in. Please try again.', 'error');
+            if (window.notificationManager) {
+                window.notificationManager.showError('Failed to sign in. Please try again.');
+            }
         }
     }
 
@@ -68,21 +76,29 @@ class CloudSaveManager {
         try {
             await window.firebase.signOut(window.firebase.auth);
             this.currentUser = null;
-            showNotification('Signed out successfully', 'info');
+            if (window.notificationManager) {
+                window.notificationManager.showInfo('Signed out successfully');
+            }
         } catch (error) {
             console.error('Sign out error:', error);
-            showNotification('Failed to sign out', 'error');
+            if (window.notificationManager) {
+                window.notificationManager.showError('Failed to sign out');
+            }
         }
     }
 
     async saveToCloud() {
         if (!this.currentUser) {
-            showNotification('Please sign in first', 'warning');
+            if (window.notificationManager) {
+                window.notificationManager.showWarning('Please sign in first');
+            }
             return;
         }
 
         try {
-            showNotification('Saving to cloud...', 'info');
+            if (window.notificationManager) {
+                window.notificationManager.showInfo('Saving to cloud...');
+            }
             
             // Get current game state
             const gameData = this.getGameState();
@@ -95,22 +111,30 @@ class CloudSaveManager {
                 version: '1.0.0'
             }, { merge: true });
 
-            showNotification('Game saved to cloud successfully!', 'success');
+            if (window.notificationManager) {
+                window.notificationManager.showSuccess('Game saved to cloud successfully!');
+            }
             
         } catch (error) {
             console.error('Cloud save error:', error);
-            showNotification('Failed to save to cloud. Please try again.', 'error');
+            if (window.notificationManager) {
+                window.notificationManager.showError('Failed to save to cloud. Please try again.');
+            }
         }
     }
 
     async loadFromCloud() {
         if (!this.currentUser) {
-            showNotification('Please sign in first', 'warning');
+            if (window.notificationManager) {
+                window.notificationManager.showWarning('Please sign in first');
+            }
             return;
         }
 
         try {
-            showNotification('Loading from cloud...', 'info');
+            if (window.notificationManager) {
+                window.notificationManager.showInfo('Loading from cloud...');
+            }
             
             // Get data from Firestore
             const userDocRef = window.firebase.doc(window.firebase.db, 'users', this.currentUser.uid);
@@ -120,17 +144,25 @@ class CloudSaveManager {
                 const data = docSnap.data();
                 if (data.gameData) {
                     this.loadGameState(data.gameData);
-                    showNotification('Game loaded from cloud successfully!', 'success');
+                    if (window.notificationManager) {
+                        window.notificationManager.showSuccess('Game loaded from cloud successfully!');
+                    }
                 } else {
-                    showNotification('No save data found in cloud', 'warning');
+                    if (window.notificationManager) {
+                        window.notificationManager.showWarning('No save data found in cloud');
+                    }
                 }
             } else {
-                showNotification('No save data found in cloud', 'warning');
+                if (window.notificationManager) {
+                    window.notificationManager.showWarning('No save data found in cloud');
+                }
             }
             
         } catch (error) {
             console.error('Cloud load error:', error);
-            showNotification('Failed to load from cloud. Please try again.', 'error');
+            if (window.notificationManager) {
+                window.notificationManager.showError('Failed to load from cloud. Please try again.');
+            }
         }
     }
 

@@ -231,7 +231,7 @@ class DogeMinerGame {
         this.totalMined += coinsPerHit;
         
         // Create floating coin effect
-        this.createFloatingCoin(coinsPerHit);
+        this.createFloatingCoin(coinsPerHit, event);
         
         // Visual effects for hitting rock
         this.createClickEffect(event);
@@ -362,19 +362,27 @@ class DogeMinerGame {
     }
     
     
-    createFloatingCoin(amount) {
+    createFloatingCoin(amount, event = null) {
         // Get the floating coins container
         const container = document.getElementById('floating-coins');
         if (!container) return;
         
-        // Get rock position
-        const rock = document.getElementById('main-rock');
-        const rockRect = rock.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
+        let startX, startY;
         
-        // Calculate position relative to container
-        const startX = rockRect.left + rockRect.width / 2 - containerRect.left;
-        const startY = rockRect.top + rockRect.height / 2 - containerRect.top;
+        if (event && event.clientX !== undefined) {
+            // Use mouse position for mouse clicks
+            const containerRect = container.getBoundingClientRect();
+            startX = event.clientX - containerRect.left;
+            startY = event.clientY - containerRect.top;
+        } else {
+            // Fall back to rock position for keyboard clicks
+            const rock = document.getElementById('main-rock');
+            const rockRect = rock.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            
+            startX = rockRect.left + rockRect.width / 2 - containerRect.left;
+            startY = rockRect.top + rockRect.height / 2 - containerRect.top;
+        }
         
         // Create DogeCoin image
         const coin = document.createElement('img');
