@@ -1,7 +1,7 @@
 # DogeMiner: Community Edition
 
 [![GitHub stars](https://img.shields.io/github/stars/DogeMinerCE/DogeMinerCE?style=social)](https://github.com/DogeMinerCE/DogeMinerCE)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](Code%20License)
 [![Play Online](https://img.shields.io/badge/play-online-green.svg)](https://dogeminerce.github.io/DogeMinerCE/)
 
 A modern, open-source Dogecoin mining simulator built with JavaScript and HTML5. Mine Dogecoins, buy helpers, upgrade your pickaxes, and build your mining empire!
@@ -15,7 +15,7 @@ A modern, open-source Dogecoin mining simulator built with JavaScript and HTML5.
 ### Play Online
 Visit [https://dogeminerce.github.io/DogeMinerCE/](https://dogeminerce.github.io/DogeMinerCE/) to play instantly in your browser.
 
-### Run Locally
+### Run Locally (Cloud Saves will not work)
 1. Clone the repository:
    ```bash
    git clone https://github.com/DogeMinerCE/DogeMinerCE.git
@@ -35,28 +35,8 @@ DogeMiner CE is made to be easily moddable and extensible. Check out our compreh
 - **[Quick Reference](modding/QUICK_MODDING_REFERENCE.md)** - Quick reference for common tasks
 - **[Technical Architecture](modding/TECHNICAL_ARCHITECTURE.md)** - Deep dive into system design
 
-## 🏗️ Project Structure
-
-```
-DogeMinerCE/
-├── play/                    # Main game directory
-│   ├── index.html          # Game HTML file
-│   ├── styles.css          # Game styles
-│   ├── js/                 # JavaScript modules
-│   │   ├── game.js         # Core game logic
-│   │   ├── ui.js           # UI management
-│   │   ├── shop.js         # Shop system
-│   │   ├── save.js         # Local save system
-│   │   ├── cloud-save.js   # Cloud save system
-│   │   └── notifications.js # Notification system
-│   └── assets/             # Game assets
-├── index.html              # Landing page
-├── styles.css              # Landing page styles
-├── assets/                 # Project assets (logos, etc.)
-└── modding/                # Modding documentation
-```
 ### Code License
-This projects code is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This projects code is licensed under the MIT License - see the [Code License](Code%20License) file for details.
 
 ### Asset License
 The assets have different licensing terms. Please check the [Asset License](Asset%20License) file for details.
