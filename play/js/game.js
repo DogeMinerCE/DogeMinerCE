@@ -20,6 +20,7 @@ class DogeMinerGame {
         this.startTime = Date.now();
         this.totalPlayTime = 0;
         
+        
         // Input state tracking
         this.isMouseDown = false;
         this.isSpaceDown = false;
@@ -74,40 +75,47 @@ class DogeMinerGame {
     initializeGameData() {
         // Helper definitions
         this.helperTypes = {
-            shibe: {
-                name: 'Shibe',
-                baseCost: 10,
-                baseDps: 1,
-                icon: 'assets/helpers/helpers/shibes/shibes-idle-0.png',
-                description: 'A loyal mining companion'
+            miningShibe: {
+                name: 'Mining Shibe',
+                baseCost: 20,
+                baseDps: 0.2,
+                icon: 'assets/helpers/shibes/shibes-idle-0.png',
+                description: 'Very kind shibe to mine much dogecoin.'
             },
-            kitten: {
-                name: 'Kitten',
-                baseCost: 50,
-                baseDps: 5,
-                icon: 'assets/helpers/helpers/kittens/kittens-idle-0.png',
-                description: 'Cute but effective miner'
+            dogeKennels: {
+                name: 'Doge Kennels',
+                baseCost: 400,
+                baseDps: 2,
+                icon: 'assets/helpers/kennels/kennels-idle-0.png',
+                description: 'Wow very efficiency, entire kennels to mine dogecoin.'
             },
-            kennel: {
-                name: 'Kennel',
-                baseCost: 200,
-                baseDps: 20,
-                icon: 'assets/helpers/helpers/kennels/kennels-idle-0.png',
-                description: 'Houses multiple shibes'
+            streamerKittens: {
+                name: 'Streamer Kittens',
+                baseCost: 1800,
+                baseDps: 4,
+                icon: 'assets/helpers/kittens/kittens-idle-0.png',
+                description: 'Kittens to stream cute videos to the internet for dogecoin.'
             },
-            rocket: {
-                name: 'Rocket',
-                baseCost: 1000,
-                baseDps: 100,
-                icon: 'assets/helpers/helpers/rockets/rockets-idle-0.png',
-                description: 'Advanced mining technology'
+            spaceRocket: {
+                name: 'Space Rocket',
+                baseCost: 50000,
+                baseDps: 9,
+                icon: 'assets/helpers/rockets/rockets-idle-0.png',
+                description: 'A rocket to fly to the moon.'
             },
-            marsbase: {
-                name: 'Mars Base',
-                baseCost: 5000,
-                baseDps: 500,
-                icon: 'assets/helpers/helpers/marsbase/marsbase-idle-0.png',
-                description: 'Interplanetary mining facility'
+            timeMachineRig: {
+                name: 'Time Machine Mining Rig',
+                baseCost: 9999999,
+                baseDps: 66,
+                icon: 'assets/helpers/rigs/rigs-idle-0.png',
+                description: 'Mines into the future where infinite dogecoins exist.'
+            },
+            infiniteDogebility: {
+                name: 'Infinite Dogebility Drive',
+                baseCost: 9999999999,
+                baseDps: 999,
+                icon: 'assets/helpers/dogebility/dogebility-idle-0.png',
+                description: 'A ship that instantaneously travels to any place in the Universe. Result? Many Dogecoins.'
             }
         };
         
@@ -443,9 +451,10 @@ class DogeMinerGame {
     }
     
     buyHelper(helperType) {
+        console.log('buyHelper called for:', helperType);
         const helper = this.helperTypes[helperType];
         const owned = this.helpers.filter(h => h.type === helperType).length;
-        const cost = Math.floor(helper.baseCost * Math.pow(1.15, owned));
+        const cost = Math.floor(helper.baseCost * Math.pow(1.2, owned));
         
         if (this.dogecoins >= cost) {
             this.dogecoins -= cost;
@@ -455,8 +464,13 @@ class DogeMinerGame {
                 owned: owned + 1
             });
             
+            console.log('Helper bought, calling updateDPS and updateUI');
             this.updateDPS();
             this.updateUI();
+            
+            // Update shop prices after purchase
+            this.updateShopPrices();
+            
             this.showNotification(`Bought ${helper.name} for ${this.formatNumber(cost)} Dogecoins!`);
             this.playSound('check.wav');
             
@@ -491,6 +505,44 @@ class DogeMinerGame {
         if (this.dps > this.highestDps) {
             this.highestDps = this.dps;
         }
+    }
+    
+    updateShopPrices() {
+        // Update shop prices and quantities without rebuilding the entire shop
+        const shopItems = document.querySelectorAll('.shop-grid-item');
+        shopItems.forEach((item, index) => {
+            const quantityElement = item.querySelector('.shop-item-quantity');
+            const priceElement = item.querySelector('.buy-btn-price');
+            const buyButton = item.querySelector('.shop-buy-btn[data-helper-type]');
+            
+            if (quantityElement && priceElement && buyButton) {
+                // Get helper type from the button's data attribute
+                const helperType = buyButton.getAttribute('data-helper-type');
+                if (helperType) {
+                    const helper = this.helperTypes[helperType];
+                    if (helper) {
+                        const owned = this.helpers.filter(h => h.type === helperType).length;
+                        const cost = Math.floor(helper.baseCost * Math.pow(1.2, owned));
+                        const canAfford = this.dogecoins >= cost;
+                        
+                        // Update quantity
+                        quantityElement.textContent = `#${owned}`;
+                        
+                        // Update price
+                        priceElement.textContent = this.formatNumber(cost);
+                        
+                        // Update button state
+                        if (canAfford) {
+                            buyButton.disabled = false;
+                            buyButton.style.opacity = '1';
+                        } else {
+                            buyButton.disabled = true;
+                            buyButton.style.opacity = '0.7';
+                        }
+                    }
+                }
+            }
+        });
     }
     
     startGameLoop() {
@@ -745,6 +797,7 @@ class DogeMinerGame {
     }
     
     updateUI() {
+        console.log('updateUI called');
         // Update dogecoin display
         document.getElementById('dogecoin-amount').textContent = this.formatNumber(Math.floor(this.dogecoins));
         document.getElementById('dps-amount').textContent = this.formatNumber(this.dps);
@@ -763,6 +816,9 @@ class DogeMinerGame {
                 dpsIcon.style.transform = 'translateX(0px)'; // Default position for short text
             }
         }
+        
+        // Update shop prices and quantities without rebuilding the entire shop
+        this.updateShopPrices();
         
         document.getElementById('total-mined').textContent = this.formatNumber(Math.floor(this.totalMined));
         document.getElementById('total-clicks').textContent = this.formatNumber(this.totalClicks);

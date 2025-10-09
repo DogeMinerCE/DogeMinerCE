@@ -57,13 +57,14 @@ body {
     position: relative;
     z-index: 10;
     width: calc(100vw - 320px); /* Full width minus left and right ad spaces */
-    margin: 20px auto; /* Back to original top margin */
+    margin: 20px auto; /* Centered horizontally */
     margin-left: 160px; /* Left margin for left ad */
     margin-right: 160px; /* Right margin for right ad */
     margin-bottom: 10px; /* Reduced bottom margin to extend panels down */
     padding: 0;
     display: flex;
     gap: 4px;
+    justify-content: center; /* Center the panels within the container */
     /* Extended height for both panels */
     height: calc(100vh - 150px); /* Extended height */
     max-height: calc(100vh - 40px); /* Ensure it doesn't exceed viewport */
@@ -93,6 +94,8 @@ body {
     border: 1px solid #d4af37;
     margin-top: 60px; /* Crop the top by 60px */
     height: calc(100% - 60px); /* Adjust height to account for top margin */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Left Panel - Mining Area */
@@ -369,36 +372,43 @@ body {
 }
 
 #panel-content {
-    height: calc(100% - 40px);
-    overflow-y: auto;
+    height: calc(100% - 35px);
+    overflow: hidden;
     padding: 0px;
     margin-top: -5px; /* Tighter spacing with tabs */
 }
 
 #shop-content {
     overflow: hidden;
-    height: 100%;
+    flex: 1;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    gap: 4px;
-    padding: 4px 4px 8px 4px;
+    grid-template-rows: auto auto auto;
+    row-gap: 4px;
+    column-gap: 4px;
+    padding: 4px;
 }
 
 .shop-grid-item {
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid #d4af37;
     border-radius: 6px;
-    padding: 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    padding: 6px;
+    display: grid;
+    grid-template-areas: 
+        "title quantity"
+        "dps quantity"
+        "sprite description"
+        "button button";
+    grid-template-rows: 20px 15px 46px auto;
+    grid-template-columns: 1fr 40px;
+    gap: 4px;
+    position: relative;
     transition: all 0.2s ease;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
     outline: 1px solid rgb(135, 125, 105);
+    min-height: auto;
 }
 
 .shop-grid-item:hover {
@@ -415,13 +425,6 @@ body {
     object-fit: contain;
 }
 
-.shop-item-title {
-    font-weight: 700;
-    font-size: 9px;
-    color: #8b4513;
-    margin-bottom: 1px;
-    line-height: 1;
-}
 
 .shop-item-price {
     font-weight: 600;
@@ -481,6 +484,122 @@ body {
     background: #ccc;
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+/* New shop item layout styles */
+
+.shop-item-quantity {
+    grid-area: quantity;
+    justify-self: end;
+    align-self: start;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000;
+    background: none;
+    border: none;
+    padding: 0;
+    z-index: 2;
+}
+
+.shop-item-title {
+    grid-area: title;
+    font-weight: normal;
+    color: #000;
+    font-size: 18px;
+    margin: 0;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shop-item-dps {
+    grid-area: dps;
+    color: #000;
+    font-size: 13.2px;
+    margin: 0;
+    text-align: left;
+}
+
+.shop-item-sprite {
+    grid-area: sprite;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shop-item-sprite img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.shop-item-description {
+    grid-area: description;
+    font-size: 11px;
+    color: rgb(56, 56, 56);
+    line-height: 1.3;
+    text-align: center;
+    z-index: 10;
+    position: relative;
+    grid-column: 1 / -1;
+    grid-row: 3 / 5;
+    margin-left: 50px;
+}
+
+.shop-buy-btn {
+    grid-area: button;
+    /* Button gradient background - same as tab buttons */
+    background: linear-gradient(to bottom, rgb(255, 220, 115) 50%, rgb(255, 210, 70) 50%);
+    border: 1px solid rgb(185, 150, 65);
+    color: rgb(80, 50, 0);
+    padding: 7.2px 8px; /* 10% smaller vertical padding (8px * 0.9) */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    font-weight: 700;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+    font-size: 10px;
+    white-space: nowrap;
+    border-radius: 6px; /* Rounded on all 4 corners */
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px; /* Increased gap for bigger logo */
+    width: 80%; /* Smaller horizontally */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.shop-buy-btn:hover:not(:disabled) {
+    background: linear-gradient(to bottom, rgb(255, 230, 125) 50%, rgb(255, 220, 80) 50%);
+}
+
+.shop-buy-btn:disabled {
+    /* Keep the same gradient but grayed out */
+    background: linear-gradient(to bottom, rgb(200, 200, 200) 50%, rgb(180, 180, 180) 50%);
+    border: 1px solid rgb(150, 150, 150);
+    color: rgb(100, 100, 100);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.buy-btn-icon {
+    width: 28px; /* 4px bigger (24px + 4px) */
+    height: 28px; /* 4px bigger (24px + 4px) */
+    object-fit: contain;
+}
+
+.buy-btn-price {
+    font-weight: 900; /* Extra bold */
+    color: rgb(80, 50, 0);
+    font-size: 22.5px; /* 25% smaller (30px * 0.75) */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* Add text shadow for extra boldness */
 }
 
 .tab-content {
@@ -548,11 +667,6 @@ body {
     margin-bottom: 10px;
 }
 
-.shop-item-title {
-    color: #8b4513;
-    font-weight: 700;
-    font-size: 16px;
-}
 
 .shop-item-price {
     color: #d4af37;
@@ -1022,62 +1136,6 @@ body {
     background: #b8941f;
 }
 
-/* Ad Space Indicators (for development) */
-@media (min-width: 1025px) {
-    body::before {
-        content: "Left Ad";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 160px;
-        height: 100vh;
-        background: rgba(255, 0, 0, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ff0000;
-        font-size: 12px;
-        z-index: 5;
-        pointer-events: none;
-    }
-    
-    body::after {
-        content: "Right Ad";
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: 160px;
-        height: 100vh;
-        background: rgba(255, 0, 0, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ff0000;
-        font-size: 12px;
-        z-index: 5;
-        pointer-events: none;
-    }
-}
-
-/* Bottom Ad Space */
-@media (min-width: 1025px) {
-    #page-background::after {
-        content: "Bottom Ad";
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100vw;
-        height: 120px;
-        background: rgba(0, 255, 0, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #00aa00;
-        font-size: 12px;
-        z-index: 5;
-        pointer-events: none;
-    }
-}
 
 /* Particle Effects */
 #particle-container {

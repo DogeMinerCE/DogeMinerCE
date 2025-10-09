@@ -2,7 +2,7 @@
 class UIManager {
     constructor(game) {
         this.game = game;
-        this.activePanel = null;
+        this.activePanel = 'shop-tab'; // Shop tab is active by default
         this.currentShopTab = 'helpers';
         
         this.setupUI();
@@ -29,6 +29,9 @@ class UIManager {
                 content.classList.remove('active');
             });
             document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Set active panel
+            this.activePanel = tabName + '-tab';
             
             // Update shop content if switching to shop
             if (tabName === 'shop') {
@@ -78,11 +81,17 @@ class UIManager {
     
     updateShopContent() {
         const shopContent = document.getElementById('shop-content');
+        if (!shopContent) {
+            console.error('shop-content element not found!');
+            return;
+        }
         shopContent.innerHTML = '';
         this.renderHelperShop(shopContent);
     }
     
     renderHelperShop(container) {
+        container.innerHTML = ''; // Clear container completely
+        
         const helperEntries = Object.entries(this.game.helperTypes);
         
         // Create 6 helper items (2x3 grid)
@@ -93,20 +102,38 @@ class UIManager {
             if (i < helperEntries.length) {
                 const [type, helper] = helperEntries[i];
                 const owned = this.game.helpers.filter(h => h.type === type).length;
-                const cost = Math.floor(helper.baseCost * Math.pow(1.15, owned));
+                const cost = Math.floor(helper.baseCost * Math.pow(1.2, owned));
                 const canAfford = this.game.dogecoins >= cost;
                 
+                
+                // Calculate button width based on price length
+                const priceText = this.game.formatNumber(cost);
+                const priceLength = priceText.length;
+                let buttonWidth = '45%'; // Even smaller default width
+                
+                // Scale button width based on price length
+                if (priceLength >= 8) {
+                    buttonWidth = '70%'; // Very long prices (millions/billions)
+                } else if (priceLength >= 6) {
+                    buttonWidth = '60%'; // Long prices (hundreds of thousands)
+                } else if (priceLength >= 4) {
+                    buttonWidth = '50%'; // Medium prices (thousands)
+                } else {
+                    buttonWidth = '45%'; // Short prices (hundreds)
+                }
+                
                 item.innerHTML = `
-                    <div class="shop-item-icon">
+                    <div class="shop-item-quantity">#${owned}</div>
+                    <div class="shop-item-title">${helper.name}</div>
+                    <div class="shop-item-dps">${helper.baseDps} ĐPS</div>
+                    <div class="shop-item-sprite">
                         <img src="${helper.icon}" alt="${helper.name}">
                     </div>
-                    <div class="shop-item-title">${helper.name}</div>
-                    <div class="shop-item-price">D ${this.game.formatNumber(cost)}</div>
-                    <div class="shop-item-stats">DPS: ${helper.baseDps}</div>
-                    <div class="shop-item-owned">Owned: ${owned}</div>
-                    <button class="buy-btn" onclick="game.buyHelper('${type}')" 
-                            ${!canAfford ? 'disabled' : ''}>
-                        Buy!
+                    <div class="shop-item-description">${helper.description}</div>
+                    <button class="shop-buy-btn" data-helper-type="${type}" 
+                            ${!canAfford ? 'disabled' : ''} style="width: ${buttonWidth};">
+                        <img src="assets/general/dogecoin_70x70.png" alt="DogeCoin" class="buy-btn-icon">
+                        <span class="buy-btn-price">${priceText}</span>
                     </button>
                 `;
             } else {
@@ -120,8 +147,35 @@ class UIManager {
             
             container.appendChild(item);
         }
+        
+        // Add event listeners to all buy buttons
+        this.setupShopButtonListeners();
     }
     
+    setupShopButtonListeners() {
+        // Add event listeners to all buy buttons
+        const buyButtons = document.querySelectorAll('.shop-buy-btn[data-helper-type]');
+        buyButtons.forEach((button) => {
+            // Remove any existing listeners to prevent duplicates
+            button.removeEventListener('click', this.handleBuyButtonClick);
+            // Add new listener
+            button.addEventListener('click', this.handleBuyButtonClick.bind(this));
+        });
+    }
+    
+    handleBuyButtonClick(event) {
+        const button = event.currentTarget;
+        const helperType = button.getAttribute('data-helper-type');
+        
+        if (helperType && window.game) {
+            const success = window.game.buyHelper(helperType);
+            if (!success) {
+                console.log('Failed to buy helper - insufficient funds');
+            }
+        } else {
+            console.error('Helper type or game not found:', helperType, !!window.game);
+        }
+    }
     
     renderPickaxeShop(container) {
         Object.entries(this.game.pickaxeTypes).forEach(([type, pickaxe]) => {

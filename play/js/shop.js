@@ -8,44 +8,52 @@ class ShopManager {
     initializeShopData() {
         return {
             helpers: {
-                shibe: {
-                    name: 'Shibe',
-                    baseCost: 10,
-                    baseDps: 1,
-                    icon: 'assets/helpers/helpers/shibes/shibes-idle-0.png',
-                    description: 'A loyal mining companion',
+                miningShibe: {
+                    name: 'Mining Shibe',
+                    baseCost: 20,
+                    baseDps: 0.2,
+                    icon: 'assets/helpers/shibes/shibes-idle-0.png',
+                    description: 'Very kind shibe to mine much dogecoin.',
                     category: 'basic'
                 },
-                kitten: {
-                    name: 'Kitten',
-                    baseCost: 50,
-                    baseDps: 5,
-                    icon: 'assets/helpers/helpers/kittens/kittens-idle-0.png',
-                    description: 'Cute but effective miner',
+                dogeKennels: {
+                    name: 'Doge Kennels',
+                    baseCost: 400,
+                    baseDps: 2,
+                    icon: 'assets/helpers/kennels/kennels-idle-0.png',
+                    description: 'Wow very efficiency, entire kennels to mine dogecoin.',
                     category: 'basic'
                 },
-                kennel: {
-                    name: 'Kennel',
-                    baseCost: 200,
-                    baseDps: 20,
-                    icon: 'assets/helpers/helpers/kennels/kennels-idle-0.png',
-                    description: 'Houses multiple shibes',
+                streamerKittens: {
+                    name: 'Streamer Kittens',
+                    baseCost: 1800,
+                    baseDps: 4,
+                    icon: 'assets/helpers/kittens/kittens-idle-0.png',
+                    description: 'Kittens to stream cute videos to the internet for dogecoin.',
                     category: 'basic'
                 },
-                rocket: {
-                    name: 'Rocket',
-                    baseCost: 1000,
-                    baseDps: 100,
-                    icon: 'assets/helpers/helpers/rockets/rockets-idle-0.png',
-                    description: 'Advanced mining technology',
+                spaceRocket: {
+                    name: 'Space Rocket',
+                    baseCost: 50000,
+                    baseDps: 9,
+                    icon: 'assets/helpers/rockets/rockets-idle-0.png',
+                    description: 'A rocket to fly to the moon.',
                     category: 'advanced'
                 },
-                marsbase: {
-                    name: 'Mars Base',
-                    baseCost: 5000,
-                    baseDps: 500,
-                    icon: 'assets/helpers/helpers/marsbase/marsbase-idle-0.png',
-                    description: 'Interplanetary mining facility',
+                timeMachineRig: {
+                    name: 'Time Machine Mining Rig',
+                    baseCost: 9999999,
+                    baseDps: 66,
+                    icon: 'assets/helpers/rigs/rigs-idle-0.png',
+                    description: 'Mines into the future where infinite dogecoins exist.',
+                    category: 'advanced'
+                },
+                infiniteDogebility: {
+                    name: 'Infinite Dogebility Drive',
+                    baseCost: 9999999999,
+                    baseDps: 999,
+                    icon: 'assets/helpers/dogebility/dogebility-idle-0.png',
+                    description: 'A ship that instantaneously travels to any place in the Universe. Result? Many Dogecoins.',
                     category: 'advanced'
                 },
                 jupiterbase: {

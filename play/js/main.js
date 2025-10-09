@@ -40,8 +40,14 @@ async function initializeGame() {
         setTimeout(() => {
             hideLoadingScreen();
             game.isPlaying = true;
-            // Make game globally available for cloud saves
+            // Make game and managers globally available
             window.game = game;
+            window.uiManager = uiManager;
+            window.shopManager = shopManager;
+            window.saveManager = saveManager;
+            window.notificationManager = notificationManager;
+            
+            
             notificationManager.showSuccess('Game loaded successfully!');
         }, 500);
         
