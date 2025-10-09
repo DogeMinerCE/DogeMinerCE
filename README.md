@@ -41,9 +41,9 @@ Visit [https://dogeminerce.github.io/DogeMinerCE/](https://dogeminerce.github.io
 DogeMiner CE is designed to be easily moddable and extensible. Check out our comprehensive documentation:
 
 ### 📚 Documentation
-- **[Modding Guide](MODDING_GUIDE.md)** - Complete guide to modifying the game
-- **[Quick Reference](QUICK_MODDING_REFERENCE.md)** - Quick reference for common tasks
-- **[Technical Architecture](TECHNICAL_ARCHITECTURE.md)** - Deep dive into system design
+- **[Modding Guide](modding/MODDING_GUIDE.md)** - Complete guide to modifying the game
+- **[Quick Reference](modding/QUICK_MODDING_REFERENCE.md)** - Quick reference for common tasks
+- **[Technical Architecture](modding/TECHNICAL_ARCHITECTURE.md)** - Deep dive into system design
 
 ### 🎯 Common Modding Tasks
 - **Add New Helpers**: Create automated miners with custom sprites
@@ -75,7 +75,8 @@ DogeMinerCE/
 │   └── assets/             # Game assets
 ├── index.html              # Landing page
 ├── styles.css              # Landing page styles
-└── docs/                   # Documentation
+├── assets/                 # Project assets (logos, etc.)
+└── modding/                # Modding documentation
 ```
 
 ## 🎨 Assets
