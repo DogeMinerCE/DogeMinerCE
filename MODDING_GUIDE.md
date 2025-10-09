@@ -1,0 +1,520 @@
+# DogeMiner Community Edition - Modding Guide
+
+## Table of Contents
+1. [Project Overview](#project-overview)
+2. [File Structure](#file-structure)
+3. [Core Game Systems](#core-game-systems)
+4. [UI System](#ui-system)
+5. [Save System](#save-system)
+6. [Cloud Save System](#cloud-save-system)
+7. [Asset Management](#asset-management)
+8. [Modding Examples](#modding-examples)
+9. [API Reference](#api-reference)
+
+## Project Overview
+
+DogeMiner Community Edition is a JavaScript-based Dogecoin mining simulator built with modern web technologies. The game features a two-panel UI system, automatic cloud saves, and a modular architecture designed for easy modification.
+
+### Key Technologies
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+- **Cloud Storage**: Firebase Firestore
+- **Authentication**: Google OAuth via Firebase
+- **Styling**: Custom CSS with DogeSans font
+- **Assets**: PNG sprites, JPG backgrounds, OTF fonts
+
+## File Structure
+
+```
+DogeMinerCE/
+├── play/                          # Main game directory
+│   ├── index.html                 # Game HTML file
+│   ├── styles.css                 # Main stylesheet
+│   ├── js/                        # JavaScript modules
+│   │   ├── main.js               # Game initialization
+│   │   ├── game.js               # Core game logic
+│   │   ├── ui.js                 # UI management
+│   │   ├── shop.js               # Shop system
+│   │   ├── save.js               # Local save system
+│   │   ├── cloud-save.js         # Cloud save system
+│   │   └── notifications.js      # Notification system
+│   ├── assets/                    # Game assets
+│   │   ├── backgrounds/          # Background images
+│   │   ├── general/              # UI elements, characters
+│   │   ├── helpers/              # Helper sprites
+│   │   └── items/                # Pickaxes and items
+│   └── dogesans/                 # Custom font files
+├── index.html                     # Landing page
+├── styles.css                     # Landing page styles
+└── assets/                        # Additional assets
+```
+
+## Core Game Systems
+
+### Game Class (`play/js/game.js`)
+
+The main game class that manages all game state and logic.
+
+#### Key Properties
+```javascript
+class DogeMinerGame {
+    constructor() {
+        this.dogecoins = 0;           // Player's currency
+        this.totalMined = 0;          // Total coins ever mined
+        this.totalClicks = 0;         // Total clicks made
+        this.dps = 0;                 // Coins per second from helpers
+        this.highestDps = 0;          // Highest DPS achieved
+        this.currentLevel = 'earth';  // Current planet/level
+        this.helpers = [];            // Array of owned helpers
+        this.pickaxes = [];           // Array of owned pickaxes
+        this.currentPickaxe = 'standard'; // Currently equipped pickaxe
+        this.isPlaying = false;       // Game state flag
+    }
+}
+```
+
+#### Key Methods
+- `handleRockClick(event)` - Processes mining clicks
+- `createFloatingCoin(amount, event)` - Creates coin collection effects
+- `swingPickaxe()` - Handles pickaxe animation
+- `bounceDoge()` - Doge character bounce animation
+- `updateUI()` - Updates all UI elements
+- `updateDPS()` - Calculates and updates DPS
+
+#### Modding Tips
+- **Add new currencies**: Extend the constructor with new properties
+- **Modify click mechanics**: Override `handleRockClick()` method
+- **Add new animations**: Extend animation methods or create new ones
+- **Custom effects**: Modify `createFloatingCoin()` for different collection effects
+
+### Helper System
+
+Helpers are automated miners that generate DPS.
+
+#### Helper Structure
+```javascript
+this.helperTypes = {
+    shibe: {
+        name: 'Shibe',
+        baseCost: 10,
+        baseDps: 1,
+        icon: 'assets/helpers/shibes/shibes-idle-0.png',
+        description: 'A loyal mining companion'
+    }
+    // Add more helpers here
+};
+```
+
+#### Adding New Helpers
+1. Add sprite files to `play/assets/helpers/`
+2. Define helper in `helperTypes` object
+3. Update shop system to display new helper
+4. Implement helper logic in game loop
+
+### Pickaxe System
+
+Pickaxes determine click power and visual appearance.
+
+#### Pickaxe Structure
+```javascript
+this.pickaxeTypes = {
+    standard: {
+        name: 'Standard Pickaxe',
+        clickPower: 1,
+        icon: 'assets/items/pickaxes/standard.png',
+        description: 'A basic mining tool'
+    }
+    // Add more pickaxes here
+};
+```
+
+## UI System
+
+### Two-Panel Layout
+
+The game uses a two-panel system:
+- **Left Panel**: Mining area with character, pickaxe, and rock
+- **Right Panel**: Shop, stats, settings, and achievements
+
+### UI Manager (`play/js/ui.js`)
+
+Manages all UI interactions and updates.
+
+#### Key Methods
+- `updateStats()` - Updates DogeCoin and DPS displays
+- `switchMainTab(tabName)` - Switches between shop/upgrades/achievements/settings
+- `updateShop()` - Refreshes shop content
+- `updateAchievements()` - Updates achievement display
+
+### Tab System
+
+#### Available Tabs
+- **Shop**: Helper purchases
+- **Upgrades**: Pickaxe and other upgrades
+- **Achievements**: Progress tracking and stats
+- **Settings**: Game options and cloud save controls
+
+#### Adding New Tabs
+1. Add tab button to HTML
+2. Create tab content div
+3. Add tab switching logic to `switchMainTab()`
+4. Implement tab-specific functionality
+
+### Notification System (`play/js/notifications.js`)
+
+Handles all in-game notifications and effects.
+
+#### Notification Types
+- `success` - Green notifications for positive events
+- `error` - Red notifications for errors
+- `warning` - Orange notifications for warnings
+- `info` - Blue notifications for information
+- `coin` - Special coin-related notifications
+- `achievement` - Achievement unlock notifications
+
+#### Usage Example
+```javascript
+notificationManager.showSuccess('Helper purchased!');
+notificationManager.showError('Not enough DogeCoins!');
+notificationManager.showCoin('+100 DogeCoins!');
+```
+
+## Save System
+
+### Local Save System (`play/js/save.js`)
+
+Handles local browser storage for game progress.
+
+#### Save Data Structure
+```javascript
+const saveData = {
+    dogecoins: this.game.dogecoins,
+    dps: this.game.dps,
+    helpers: this.game.helpers,
+    upgrades: this.game.upgrades,
+    totalMined: this.game.totalMined,
+    totalClicks: this.game.totalClicks,
+    currentLevel: this.game.currentLevel,
+    currentPickaxe: this.game.currentPickaxe,
+    playTime: this.game.playTime,
+    highestDps: this.game.highestDps,
+    achievements: this.game.achievements,
+    settings: {
+        soundEnabled: this.game.soundEnabled,
+        musicEnabled: this.game.musicEnabled,
+        notificationsEnabled: this.game.notificationsEnabled,
+        autoSaveEnabled: this.game.autoSaveEnabled
+    }
+};
+```
+
+#### Key Methods
+- `saveGame()` - Saves current game state to localStorage
+- `loadGame()` - Loads game state from localStorage
+- `exportSave()` - Exports save data as downloadable file
+- `importSave()` - Imports save data from file
+- `resetGame()` - Resets all game progress
+
+### Auto-Save System
+
+- **Interval**: Every 30 seconds
+- **Trigger**: When `game.isPlaying` is true
+- **Integration**: Automatically saves to cloud if user is signed in
+
+## Cloud Save System
+
+### Cloud Save Manager (`play/js/cloud-save.js`)
+
+Handles Firebase integration for cloud storage.
+
+#### Firebase Configuration
+```javascript
+const firebaseConfig = {
+    apiKey: "your-api-key",
+    authDomain: "your-project.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project.appspot.com",
+    messagingSenderId: "your-sender-id",
+    appId: "your-app-id"
+};
+```
+
+#### Key Features
+- **Google OAuth**: Sign in with Google account
+- **Automatic Sync**: Auto-saves every 30 seconds
+- **Cross-Device**: Access saves from any device
+- **Manual Controls**: Save/Load buttons for testing
+
+#### Key Methods
+- `signInWithGoogle()` - Authenticates user with Google
+- `saveToCloud()` - Manual cloud save with notifications
+- `saveToCloudSilent()` - Automatic cloud save (no notifications)
+- `loadFromCloud()` - Manual cloud load with notifications
+- `loadFromCloudSilent()` - Automatic cloud load (no notifications)
+
+#### Data Structure
+Cloud saves use the same structure as local saves, stored in Firestore under:
+```
+/users/{userId}/gameData
+```
+
+## Asset Management
+
+### Background System
+
+#### Rotating Backgrounds
+- **Location**: `play/assets/backgrounds/`
+- **Format**: JPG files
+- **Rotation**: 15-second intervals with fade transitions
+- **Files**: bg1.jpg, bg3.jpg, bg4.jpg, bg5.jpg, bg6.jpg, bg7.jpg, bg9.jpg, bg-new.jpg
+
+#### Adding New Backgrounds
+1. Add JPG file to `play/assets/backgrounds/`
+2. Update `backgrounds` array in `game.js`
+3. Ensure proper file naming convention
+
+### Sprite System
+
+#### Character Sprites
+- **Location**: `play/assets/general/character/`
+- **Format**: PNG files
+- **Usage**: Main character, idle animations, blinking
+
+#### Helper Sprites
+- **Location**: `play/assets/helpers/`
+- **Format**: PNG files
+- **Structure**: Organized by helper type in subdirectories
+
+#### Pickaxe Sprites
+- **Location**: `play/assets/items/pickaxes/`
+- **Format**: PNG files
+- **Usage**: Different pickaxe appearances
+
+### Font System
+
+#### DogeSans Font
+- **Location**: `play/dogesans/`
+- **Files**: 
+  - `DogeSans-Normal.otf` - Regular weight
+  - `DogeSans-Italic.otf` - Italic style
+  - `DogeSansVF.ttf` - Variable font (100-900 weight)
+
+#### CSS Implementation
+```css
+@font-face {
+    font-family: 'DogeSans';
+    src: url('dogesans/DogeSans-Normal.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+```
+
+## Modding Examples
+
+### Adding a New Helper
+
+1. **Create Helper Definition**
+```javascript
+// In game.js, add to helperTypes
+newHelper: {
+    name: 'Super Shibe',
+    baseCost: 1000,
+    baseDps: 50,
+    icon: 'assets/helpers/super-shibe/super-shibe-idle.png',
+    description: 'An advanced mining companion'
+}
+```
+
+2. **Add Sprites**
+- Create directory: `play/assets/helpers/super-shibe/`
+- Add sprite files: `super-shibe-idle.png`, `super-shibe-mine.png`
+
+3. **Update Shop System**
+- Helper will automatically appear in shop
+- Cost scaling and DPS calculation handled automatically
+
+### Adding a New Pickaxe
+
+1. **Create Pickaxe Definition**
+```javascript
+// In game.js, add to pickaxeTypes
+diamondPickaxe: {
+    name: 'Diamond Pickaxe',
+    clickPower: 10,
+    icon: 'assets/items/pickaxes/diamond.png',
+    description: 'A powerful mining tool'
+}
+```
+
+2. **Add Sprite**
+- Add file: `play/assets/items/pickaxes/diamond.png`
+
+3. **Update Upgrade System**
+- Pickaxe will appear in upgrades tab
+- Click power automatically applied
+
+### Adding Custom Animations
+
+1. **Create Animation Method**
+```javascript
+// In game.js
+animateCustomEffect() {
+    const element = document.getElementById('custom-element');
+    element.style.animation = 'customAnimation 1s ease-in-out';
+}
+```
+
+2. **Add CSS Animation**
+```css
+@keyframes customAnimation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+```
+
+### Adding New Achievement
+
+1. **Define Achievement**
+```javascript
+// In game.js
+this.achievements = {
+    firstMillion: {
+        name: 'First Million',
+        description: 'Earn 1,000,000 DogeCoins',
+        condition: () => this.totalMined >= 1000000,
+        unlocked: false,
+        reward: 10000
+    }
+};
+```
+
+2. **Add Achievement Check**
+```javascript
+// In updateUI() method
+this.checkAchievements();
+```
+
+3. **Create Achievement Display**
+- Add to achievements tab HTML
+- Update `updateAchievements()` method
+
+## API Reference
+
+### Global Variables
+
+- `window.game` - Main game instance
+- `window.uiManager` - UI management instance
+- `window.shopManager` - Shop system instance
+- `window.saveManager` - Save system instance
+- `window.cloudSaveManager` - Cloud save instance
+- `window.notificationManager` - Notification system instance
+
+### Game Events
+
+#### Click Events
+- **Rock Click**: Triggers mining, animations, and coin generation
+- **Helper Purchase**: Updates shop, adds helper, recalculates DPS
+- **Pickaxe Upgrade**: Changes click power and visual appearance
+
+#### Save Events
+- **Auto-Save**: Every 30 seconds when game is playing
+- **Manual Save**: User-initiated save operations
+- **Cloud Sync**: Automatic cloud save when user is signed in
+
+#### UI Events
+- **Tab Switch**: Changes active panel content
+- **Settings Change**: Updates game preferences
+- **Notification**: Shows user feedback
+
+### CSS Classes
+
+#### Game Panels
+- `.game-panel` - Main panel styling
+- `.left-panel` - Mining area panel
+- `.right-panel` - UI controls panel
+
+#### UI Elements
+- `.tab-btn` - Tab button styling
+- `.tab-content` - Tab content area
+- `.notification` - Notification styling
+- `.stat-item` - Statistics display
+
+#### Animations
+- `.shake` - Rock shake animation
+- `.dogecoin-effect` - Coin collection effect
+- `.floating-coin` - Floating coin animation
+
+### Performance Considerations
+
+#### Optimization Tips
+- **Asset Loading**: Preload critical sprites
+- **Animation Performance**: Use CSS transforms over position changes
+- **Memory Management**: Clean up unused DOM elements
+- **Save Frequency**: Balance auto-save frequency with performance
+
+#### Best Practices
+- **Modular Code**: Keep modifications in separate files when possible
+- **Error Handling**: Always include try-catch blocks for new features
+- **Testing**: Test modifications across different browsers
+- **Documentation**: Document any new systems or major changes
+
+## Troubleshooting
+
+### Common Issues
+
+#### Game Not Loading
+- Check browser console for JavaScript errors
+- Verify all asset paths are correct
+- Ensure Firebase configuration is valid
+
+#### Cloud Saves Not Working
+- Verify Firebase project configuration
+- Check Firestore security rules
+- Ensure user is properly authenticated
+
+#### Assets Not Displaying
+- Check file paths in asset references
+- Verify file formats are supported
+- Ensure files are in correct directories
+
+#### Performance Issues
+- Monitor browser performance tools
+- Check for memory leaks in animations
+- Optimize asset file sizes
+
+### Debug Tools
+
+#### Browser Console
+- Use `console.log()` for debugging
+- Check for JavaScript errors
+- Monitor network requests
+
+#### Firebase Console
+- Monitor Firestore usage
+- Check authentication status
+- View cloud save data
+
+#### Performance Monitoring
+- Use browser DevTools Performance tab
+- Monitor memory usage
+- Check frame rates during animations
+
+---
+
+## Contributing
+
+When contributing to DogeMiner Community Edition:
+
+1. **Follow the existing code style**
+2. **Test thoroughly across browsers**
+3. **Update this documentation for new features**
+4. **Ensure backward compatibility**
+5. **Add appropriate error handling**
+
+## License
+
+Please refer to the Code License and Asset License files for usage terms and restrictions.
+
+---
+
+*This documentation is maintained by the DogeMiner Community Edition development team. For questions or contributions, please refer to the project repository.*
