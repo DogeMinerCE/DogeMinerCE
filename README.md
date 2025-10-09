@@ -3,6 +3,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/DogeMinerCE/DogeMinerCE?style=social)](https://github.com/DogeMinerCE/DogeMinerCE)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](Code%20License)
 [![Play Online](https://img.shields.io/badge/play-online-green.svg)](https://dogeminerce.github.io/DogeMinerCE/)
+[![Discord](https://img.shields.io/badge/discord-join-7289da.svg?logo=discord&logoColor=white)](https://discord.gg/dogeminer)
 
 A modern, open-source Dogecoin mining simulator built with JavaScript and HTML5. Mine Dogecoins, buy helpers, upgrade your pickaxes, and build your mining empire!
 
@@ -40,5 +41,3 @@ This projects code is licensed under the MIT License - see the [Code License](Co
 
 ### Asset License
 The assets have different licensing terms. Please check the [Asset License](Asset%20License) file for details.
-
-**Discord**: [Join our Discord server](https://discord.gg/dogeminer)
