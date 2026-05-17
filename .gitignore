@@ -87,4 +87,6 @@ skills-lock.json
 dist_msix/
 *.msix
 packaging/windows/*.pfx
-packaging/windows/Assets/*.png
+packaging/windows/Assets/*.png
+Bundling DogeminerCE For Microsoft Store.md
+Bunding DogeminerCE For Microsoft Store
