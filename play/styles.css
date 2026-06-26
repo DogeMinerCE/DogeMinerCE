@@ -794,6 +794,80 @@ body {
     /* Gradient with bottom color taking up more space */
     border: 1px solid #d4af37;
     position: relative;
+    perspective: 1200px;
+}
+
+/* ===================== Bonus Coin ===================== */
+/* Clickable coin that periodically appears in the mining area */
+.bonus-coin-spawn {
+    position: absolute;
+    z-index: 40;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-drag: none;
+    /* Override the global `img { pointer-events: none }` so the coin is clickable */
+    pointer-events: auto;
+    /* Glow tinted to the coin's level color (set inline via --bc-glow) */
+    filter: drop-shadow(0 0 12px var(--bc-glow, rgba(255, 200, 40, 0.9)));
+    animation: bonus-coin-appear 0.4s ease-out, bonus-coin-bob 1.6s ease-in-out 0.4s infinite;
+    transition: transform 0.12s ease;
+}
+
+.bonus-coin-spawn:hover {
+    transform: scale(1.12);
+}
+
+@keyframes bonus-coin-appear {
+    0%   { transform: scale(0) rotate(-45deg); opacity: 0; }
+    70%  { transform: scale(1.25) rotate(8deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes bonus-coin-bob {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -8px; }
+}
+
+@keyframes bonus-coin-spin {
+    0%   { transform: rotateY(0deg) scale(1); opacity: 1; }
+    100% { transform: rotateY(1800deg) scale(0.3); opacity: 0; }
+}
+
+/* Active-buff indicator pill — sits below the DPS counter in #stats-display */
+.bonus-coin-buff {
+    align-self: center;
+    margin-top: -6px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 4px;
+    /* Flat color tinted to the active coin's level (set inline via --bc-glow) */
+    background: var(--bc-glow, #ff9800);
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+    animation: bonus-coin-appear 0.3s ease-out;
+}
+
+.bonus-coin-buff img {
+    width: 26px;
+    height: 26px;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+}
+
+.bonus-coin-buff .bcb-mult {
+    font-size: 15px;
+}
+
+.bonus-coin-buff .bcb-time {
+    font-size: 13px;
+    opacity: 0.85;
+    font-variant-numeric: tabular-nums;
 }
 
 /* Switcher Buttons (Pickaxes & Fortunes) */

@@ -264,6 +264,10 @@ class SaveManager {
             mysteryBoxOpenCount: this.game.mysteryBoxOpenCount || 0,
             mysteryBoxTimerRemaining: this.game.mysteryBoxTimerRemaining || 0,
             mysteryBoxLastSaveTime: Date.now(),
+            bonusCoinLevel: this.game.bonusCoinLevel || 1,
+            bonusCoinSeenLevel: this.game.bonusCoinSeenLevel || 0,
+            bonusCoinBuffMultiplier: this.game.bonusCoinBuffMultiplier || 1,
+            bonusCoinBuffEndTime: this.game.bonusCoinBuffEndTime || 0,
             rocksBroken: this.game.rocksBroken,
             upgrades: this.game.upgrades || {},
             helperUpgradeLevels: this.game.helperUpgradeLevels || {},
@@ -358,7 +362,13 @@ class SaveManager {
         this.game.mysteryBoxObtained = saveData.mysteryBoxObtained || false;
         this.game.mysteryBoxOpenCount = saveData.mysteryBoxOpenCount || 0;
         this.game.mysteryBoxTimerRemaining = saveData.mysteryBoxTimerRemaining || 0;
-        
+
+        // Bonus Coin state
+        this.game.bonusCoinLevel = saveData.bonusCoinLevel || 1;
+        this.game.bonusCoinSeenLevel = saveData.bonusCoinSeenLevel || 0;
+        this.game.bonusCoinBuffMultiplier = saveData.bonusCoinBuffMultiplier || 1;
+        this.game.bonusCoinBuffEndTime = saveData.bonusCoinBuffEndTime || 0;
+
         // Retroactive Mystery Box unlock for older saves
         if (!this.game.mysteryBoxObtained && Array.isArray(this.game.fortuneInventory)) {
             if (this.game.fortuneInventory.some(f => f && f.name === 'Mystery Box')) {
@@ -1033,6 +1043,15 @@ class SaveManager {
                 this.game.mysteryBoxOpenCount = 0;
                 this.game.mysteryBoxTimerRemaining = 0;
                 this.game.mysteryBoxLastSaveTime = 0;
+
+                // Reset Bonus Coin progression and clear any active buff / on-screen coin
+                this.game.bonusCoinLevel = 1;
+                this.game.bonusCoinSeenLevel = 0;
+                this.game.bonusCoinBuffMultiplier = 1;
+                this.game.bonusCoinBuffEndTime = 0;
+                if (typeof this.game._expireBonusCoinBuff === 'function') this.game._expireBonusCoinBuff();
+                if (typeof this.game._removeBonusCoinEl === 'function') this.game._removeBonusCoinEl();
+
                 const mboxBtn = document.getElementById('mystery-box-btn');
                 if (mboxBtn) mboxBtn.style.display = 'none';
                 

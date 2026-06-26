@@ -677,6 +677,8 @@ function addDebugConsole() {
         <button onclick="game.forceRickSpawn()">Spawn Rick</button>
         <button onclick="game.createDogebag()">Spawn Dogebag</button>
         <button onclick="game.mysteryBoxTimerRemaining = 0; game.startMysteryBoxTimer()">Skip Mystery Box Timer</button>
+        <button onclick="game.spawnBonusCoin()">Spawn Bonus Coin</button>
+        <button onclick="debugLevelUpBonusCoin()">Level up Bonus Coin</button>
         <button onclick="debugGrantAllPickaxes()">Grant all Pickaxes</button>
         <button onclick="debugGrantAllFortunes()">Grant all Fortunes</button>
         <button onclick="saveManager.repairSave()">Repair Save</button>
@@ -691,6 +693,23 @@ function removeDebugConsole() {
     if (debugConsole) {
         debugConsole.remove();
     }
+}
+
+function debugLevelUpBonusCoin() {
+    if (!window.game) return;
+    const g = window.game;
+    const maxLevel = g.getBonusCoinTiers().length - 1;
+    if (g.bonusCoinLevel >= maxLevel) {
+        g.showNotification('Bonus Coin already at max tier!');
+        return;
+    }
+    g.bonusCoinLevel++;
+    g.bonusCoinSeenLevel = g.bonusCoinLevel; // suppress duplicate unlock toast below
+    const tier = g.getCurrentBonusCoinTier();
+    g.showNotification(`Bonus Coin leveled up: ${tier.name}!`);
+    g.playSound('longSparkle');
+    g._renderBonusCoinBuffIndicator();
+    console.log(`Debug: Bonus Coin now tier ${g.bonusCoinLevel} (${tier.name})`);
 }
 
 function debugGrantAllPickaxes() {

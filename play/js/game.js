@@ -219,6 +219,18 @@ class DogeMinerGame {
         this.mysteryBoxLastSaveTime = 0; // Date.now() when last saved/closed
         this._mysteryBoxInterval = null; // setInterval ref
 
+        // Bonus Coin system — a coin that periodically appears on the mining area.
+        // Clicking it grants a temporary boost to BOTH total DPS and DPC. The coin
+        // "levels up" (smaller sprite, bigger boost) as the player unlocks new planets.
+        this.bonusCoinLevel = 1;        // Highest tier unlocked (1=Earth ... 6=Reallyhardium)
+        this.bonusCoinSeenLevel = 0;    // Highest tier the player has been notified about
+        this.bonusCoinBuffMultiplier = 1;   // Active buff multiplier (1 = no buff)
+        this.bonusCoinBuffEndTime = 0;      // Date.now() when the active buff expires
+        this._bonusCoinSpawnTimeout = null; // pending spawn timer
+        this._bonusCoinDespawnTimeout = null; // on-screen lifetime timer
+        this._bonusCoinBuffInterval = null; // countdown/expiry ticker
+        this._bonusCoinEl = null;           // the on-screen clickable coin element
+
         // Inventory UI state (shared desktop + mobile)
         this._inventoryUi = {
             pickaxe: { search: '', rarity: '', sort: 'newest' },
@@ -638,6 +650,14 @@ class DogeMinerGame {
         }
 
         damage = Math.max(1, Math.floor(damage));
+
+        // Apply the Bonus Coin buff AFTER flooring so low-DPC pickaxes still benefit
+        // visibly (e.g. a 1-DPC pickaxe would otherwise lose a +50% buff to rounding).
+        // Rounded, with a guaranteed minimum of +1 while a buff is active.
+        if (this.bonusCoinBuffMultiplier > 1) {
+            damage = Math.max(damage + 1, Math.round(damage * this.bonusCoinBuffMultiplier));
+        }
+
         return { damage, isCrit };
     }
 
@@ -4798,14 +4818,191 @@ class DogeMinerGame {
             return total + (upgradeDPS || helper.dps);
         }, 0);
 
+        // Keep the unlocked Bonus Coin tier in sync with planet progression.
+        this.refreshBonusCoinLevel();
+
         const baseDpsTotal = earthDPS + moonDPS + marsDPS + jupiterDPS + titanDPS;
-        this.dps = baseDpsTotal * (this.playerStats.helperDpsMultiplier || 1) + (this.playerStats.flatHelperDps || 0);
+        this.dps = (baseDpsTotal * (this.playerStats.helperDpsMultiplier || 1) + (this.playerStats.flatHelperDps || 0)) * this.bonusCoinBuffMultiplier;
 
         // Update highest DPS
         if (this.dps > this.highestDps) {
             this.highestDps = this.dps;
         }
     }
+
+    // ===================== BONUS COIN SYSTEM =====================
+
+    /**
+     * Tier table for the Bonus Coin. Index = tier level. As the player progresses
+     * the coin gets smaller and the temporary DPS/DPC boost gets larger.
+     */
+    getBonusCoinTiers() {
+        return [
+            null, // index 0 unused
+            { level: 1, name: 'Earth Bonus Coin',    sprite: 'level 1.webp',     boost: 0.50, duration: 60,  size: 96, glow: '#ffcc33' },
+            { level: 2, name: 'Moon Bonus Coin',     sprite: 'level 2.webp',     boost: 0.60, duration: 90,  size: 86, glow: '#4aa8ff' },
+            { level: 3, name: 'Mars Bonus Coin',     sprite: 'level 3.webp',     boost: 0.70, duration: 120, size: 76, glow: '#ffb838' },
+            { level: 4, name: 'Jupiter Bonus Coin',  sprite: 'level 4.webp',     boost: 0.80, duration: 120, size: 66, glow: '#3f7bff' },
+            { level: 5, name: 'Titan Bonus Coin',    sprite: 'level 5.webp',     boost: 0.90, duration: 120, size: 58, glow: '#9b59ff' },
+            { level: 6, name: 'Reallyhardium Super Fortune', sprite: 'level 5 alt.webp', boost: 1.00, duration: 180, size: 50, glow: '#cf57ff' }
+        ];
+    }
+
+    getCurrentBonusCoinTier() {
+        return this.getBonusCoinTiers()[this.bonusCoinLevel] || this.getBonusCoinTiers()[1];
+    }
+
+    /**
+     * Recomputes the highest Bonus Coin tier the player has unlocked based on
+     * which planet bases they own + the Awakened Altar upgrade. Idempotent;
+     * safe to call frequently. Notifies the player when a new tier is unlocked.
+     */
+    refreshBonusCoinLevel() {
+        let level = 1; // Earth coin is always available
+        if ((this.moonHelpers || []).some(h => h.type === 'moonBase')) level = Math.max(level, 2);
+        if ((this.marsHelpers || []).some(h => h.type === 'marsBase')) level = Math.max(level, 3);
+        if ((this.jupiterHelpers || []).some(h => h.type === 'cloudBase')) level = Math.max(level, 4);
+        if ((this.titanHelpers || []).some(h => h.type === 'titanBase')) level = Math.max(level, 5);
+        // Awakened Altar of the SunDoge (upgrade level >= 1) = the Cybernetic Implant equivalent
+        if ((this.helperUpgradeLevels && this.helperUpgradeLevels.altarOfTheSunDoge || 0) >= 1) level = Math.max(level, 6);
+
+        if (level > this.bonusCoinLevel) this.bonusCoinLevel = level;
+
+        if (this.bonusCoinSeenLevel === 0) {
+            // First sync after load — establish a baseline without notifying.
+            this.bonusCoinSeenLevel = this.bonusCoinLevel;
+        } else if (this.bonusCoinLevel > this.bonusCoinSeenLevel) {
+            this.bonusCoinSeenLevel = this.bonusCoinLevel;
+            const tier = this.getCurrentBonusCoinTier();
+            this.showNotification(`New Bonus Coin unlocked: ${tier.name}!`);
+            this.playSound('longSparkle');
+        }
+    }
+
+    /** Schedules the next on-screen Bonus Coin appearance (fairly rare). */
+    scheduleBonusCoinSpawn() {
+        if (this._bonusCoinSpawnTimeout) clearTimeout(this._bonusCoinSpawnTimeout);
+        const delay = (150 + Math.random() * 150) * 1000; // 2.5–5 min
+        this._bonusCoinSpawnTimeout = setTimeout(() => this.spawnBonusCoin(), delay);
+    }
+
+    /** Spawns a clickable Bonus Coin somewhere in the mining area. */
+    spawnBonusCoin() {
+        if (!this.isPlaying || this.isCutscenePlaying || this.isTransitioning || this.isIntroPlaying || this._bonusCoinEl) {
+            this.scheduleBonusCoinSpawn();
+            return;
+        }
+        const leftPanel = document.getElementById('left-panel');
+        if (!leftPanel) { this.scheduleBonusCoinSpawn(); return; }
+
+        const tier = this.getCurrentBonusCoinTier();
+        const coin = document.createElement('img');
+        coin.src = `assets/general/Bonus Coins/${tier.sprite}`;
+        coin.className = 'bonus-coin-spawn';
+        coin.alt = tier.name;
+        coin.style.width = tier.size + 'px';
+        coin.style.setProperty('--bc-glow', tier.glow);
+
+        const rect = leftPanel.getBoundingClientRect();
+        const margin = 40;
+        const x = margin + Math.random() * Math.max(1, rect.width - margin * 2 - tier.size);
+        const y = margin + Math.random() * Math.max(1, rect.height - margin * 2 - tier.size);
+        coin.style.left = x + 'px';
+        coin.style.top = y + 'px';
+
+        const claim = (e) => {
+            if (e) { e.stopPropagation(); e.preventDefault(); }
+            // Play the 3D spin animation before removing the coin
+            if (this._bonusCoinEl) {
+                this._bonusCoinEl.style.animation = 'bonus-coin-spin 0.6s ease-in forwards';
+                // Remove after animation completes
+                setTimeout(() => this._removeBonusCoinEl(), 600);
+            }
+            this.activateBonusCoin();
+            this.scheduleBonusCoinSpawn();
+        };
+        coin.addEventListener('click', claim);
+        coin.addEventListener('touchstart', claim, { passive: false });
+
+        leftPanel.appendChild(coin);
+        this._bonusCoinEl = coin;
+        this.playSound('ching');
+
+        // Flies away if not clicked within its on-screen lifetime.
+        this._bonusCoinDespawnTimeout = setTimeout(() => {
+            this._removeBonusCoinEl();
+            this.scheduleBonusCoinSpawn();
+        }, 12000);
+    }
+
+    _removeBonusCoinEl() {
+        if (this._bonusCoinDespawnTimeout) { clearTimeout(this._bonusCoinDespawnTimeout); this._bonusCoinDespawnTimeout = null; }
+        if (this._bonusCoinEl) { this._bonusCoinEl.remove(); this._bonusCoinEl = null; }
+    }
+
+    /** Activates (or refreshes) the Bonus Coin buff for the current tier. */
+    activateBonusCoin() {
+        const tier = this.getCurrentBonusCoinTier();
+        this.bonusCoinBuffMultiplier = 1 + tier.boost;
+        this.bonusCoinBuffEndTime = Date.now() + tier.duration * 1000;
+        this.updateDPS();
+        this._startBonusCoinBuffTicker();
+        this._renderBonusCoinBuffIndicator();
+        this.playSound('getCoins');
+        // No notification on collect — the buff pill below DPS is indicator enough.
+    }
+
+    _startBonusCoinBuffTicker() {
+        if (this._bonusCoinBuffInterval) clearInterval(this._bonusCoinBuffInterval);
+        this._bonusCoinBuffInterval = setInterval(() => {
+            if (this.bonusCoinBuffEndTime - Date.now() <= 0) {
+                this._expireBonusCoinBuff();
+            } else {
+                this._renderBonusCoinBuffIndicator();
+            }
+        }, 1000);
+    }
+
+    _expireBonusCoinBuff() {
+        this.bonusCoinBuffMultiplier = 1;
+        this.bonusCoinBuffEndTime = 0;
+        if (this._bonusCoinBuffInterval) { clearInterval(this._bonusCoinBuffInterval); this._bonusCoinBuffInterval = null; }
+        this.updateDPS();
+        this._renderBonusCoinBuffIndicator();
+    }
+
+    /** Restores an in-progress buff after a page reload / save load. */
+    resumeBonusCoinBuff() {
+        if (this.bonusCoinBuffMultiplier > 1 && this.bonusCoinBuffEndTime > Date.now()) {
+            this._startBonusCoinBuffTicker();
+            this._renderBonusCoinBuffIndicator();
+        } else {
+            this.bonusCoinBuffMultiplier = 1;
+            this.bonusCoinBuffEndTime = 0;
+        }
+    }
+
+    _renderBonusCoinBuffIndicator() {
+        const active = this.bonusCoinBuffMultiplier > 1 && this.bonusCoinBuffEndTime > Date.now();
+        let el = document.getElementById('bonus-coin-buff');
+        if (!active) { if (el) el.remove(); return; }
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'bonus-coin-buff';
+            el.className = 'bonus-coin-buff';
+            // Stack it directly beneath the DPS counter so it's clear what it affects.
+            (document.getElementById('stats-display') || document.getElementById('left-panel') || document.body).appendChild(el);
+        }
+        const tier = this.getCurrentBonusCoinTier();
+        el.style.setProperty('--bc-glow', tier.glow);
+        const remaining = Math.max(0, this.bonusCoinBuffEndTime - Date.now());
+        el.innerHTML =
+            `<img src="assets/general/Bonus Coins/${tier.sprite}" alt="">` +
+            `<span class="bcb-mult">+${Math.round((this.bonusCoinBuffMultiplier - 1) * 100)}%</span>` +
+            `<span class="bcb-time">${this._formatMs(remaining)}</span>`;
+    }
+
+    // =================== END BONUS COIN SYSTEM ===================
 
 
     // Get sprite paths for a helper type at a specific upgrade level
@@ -4932,6 +5129,10 @@ class DogeMinerGame {
     startGameLoop() {
         this.isPlaying = true;
         this.lastGameLoopTime = performance.now();
+
+        // Bonus Coin: restore any in-progress buff and begin the spawn cycle.
+        this.resumeBonusCoinBuff();
+        this.scheduleBonusCoinSpawn();
 
         // Read value update rate: 0 (instant), 100, 1000, 5000
         const savedRate = localStorage.getItem('valueUpdateRate');
