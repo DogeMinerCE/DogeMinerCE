@@ -144,6 +144,20 @@
                 </div>
             </div>
 
+            <!-- Dogediamonds First-Find Explainer -->
+            <div id="diamond-intro-modal" class="switcher-modal">
+                <div class="switcher-modal-content diamond-intro-content">
+                    <img src="assets/general/icons/diamonds_stack.webp" alt="Dogediamonds" class="diamond-intro-img">
+                    <h2 class="diamond-intro-title">You found a Dogediamond!</h2>
+                    <p class="diamond-intro-text">
+                        Dogediamonds are a rare and precious currency &mdash; notoriously hard to come by.
+                        They drop from breaking rocks and are used to buy special upgrades
+                        <strong>without</strong> spending your Dogecoins. Spend them wisely!
+                    </p>
+                    <button class="mbox-action-btn" onclick="window.game.closeDiamondIntro()">WOW, NICE!</button>
+                </div>
+            </div>
+
             <!-- Platform (behind everything) -->
             <div id="platform-container">
                 <img src="../assets/quickUI/dogeplatform.webp" alt="Platform" id="platform">
@@ -172,6 +186,12 @@
 
                 <!-- Floating Coins -->
                 <div id="floating-coins"></div>
+            </div>
+
+            <!-- Dogediamond Counter (top-right of left panel) -->
+            <div id="diamond-counter" style="display: none;">
+                <img src="assets/general/diamond.webp" alt="Dogediamonds" class="diamond-counter-icon">
+                <span id="diamond-amount">0</span>
             </div>
 
             <!-- Helper Container -->

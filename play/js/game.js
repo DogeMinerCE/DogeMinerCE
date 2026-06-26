@@ -231,6 +231,13 @@ class DogeMinerGame {
         this._bonusCoinBuffInterval = null; // countdown/expiry ticker
         this._bonusCoinEl = null;           // the on-screen clickable coin element
 
+        // Dogediamonds — a rare premium currency used to buy non-direct upgrades.
+        // Dropped from breaking rocks (3% lucky drop) and guaranteed within the first
+        // 10 rocks for players who have never obtained one.
+        this.dogediamonds = 0;              // current spendable balance
+        this.dogediamondsEverObtained = 0;  // lifetime total (drives the first-find popup + counter visibility)
+        this.searchdogeSlot3Unlocked = false; // 3rd upgrade ("Searchdoge") slot, unlocked for 1 Dogediamond
+
         // Inventory UI state (shared desktop + mobile)
         this._inventoryUi = {
             pickaxe: { search: '', rarity: '', sort: 'newest' },
@@ -906,6 +913,10 @@ class DogeMinerGame {
         if (this.rollDogebagDrop()) {
             this.createDogebag();
         }
+        // 0% threshold: rare Dogediamond lucky drop
+        if (this.rollDiamondDrop()) {
+            this.createDiamondLoot();
+        }
         // 90% chance to expel coin piles when rock breaks
         if (Math.random() < 0.9) {
             this.expelCoinPiles();
@@ -1231,6 +1242,158 @@ class DogeMinerGame {
         const multiplier = 1 + (this.playerStats.lootFind / 100) + luckMult;
         return Math.max(1, Math.floor(baseDrop * multiplier));
     }
+
+    // ===================== DOGEDIAMONDS =====================
+
+    /**
+     * Rolls whether a Dogediamond should drop when a rock is destroyed.
+     * 3% lucky drop, plus a guaranteed drop within the first 10 rocks for players
+     * who have never obtained one (mirrors the Dogebag first-drop guarantee).
+     */
+    rollDiamondDrop() {
+        // Guarantee the player's very first Dogediamond within their first 10 rock breaks
+        if (this.dogediamondsEverObtained === 0 && this.rocksBroken >= 10) {
+            return true;
+        }
+        return Math.random() < 0.03; // 3% lucky drop
+    }
+
+    /**
+     * Creates a single clickable Dogediamond that disperses from the rock.
+     * Mirrors the coin-pile drop/despawn behavior.
+     */
+    createDiamondLoot() {
+        const rockContainer = document.getElementById('rock-container');
+        if (!rockContainer) return;
+
+        const diamond = document.createElement('div');
+        diamond.className = 'diamond-loot';
+
+        const img = document.createElement('img');
+        img.src = 'assets/general/icons/diamond_loot.webp';
+        img.alt = 'Dogediamond';
+        img.draggable = false;
+        diamond.appendChild(img);
+
+        // Disperse to a random spot below the rock, avoiding the central HP text
+        let finalOffsetX = (Math.random() - 0.5) * 220;
+        let finalOffsetY = 80 + Math.random() * 80;
+        if (Math.abs(finalOffsetX) < 70 && finalOffsetY < 150) {
+            finalOffsetY = 150 + Math.random() * 40;
+        }
+        diamond.style.setProperty('--pile-end-x', `${finalOffsetX}px`);
+        diamond.style.setProperty('--pile-end-y', `${finalOffsetY}px`);
+        diamond.style.left = '50%';
+        diamond.style.top = '50%';
+
+        diamond.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.collectDiamond(diamond);
+        });
+
+        rockContainer.appendChild(diamond);
+        diamond.style.animation = 'coinPileDisperse 0.4s ease-out forwards';
+
+        // Linger longer than coins (these are rare) before warning + despawn
+        setTimeout(() => {
+            if (diamond.parentNode) {
+                diamond.style.animation = 'coinPileWarning 5s linear forwards';
+                setTimeout(() => {
+                    if (diamond.parentNode) {
+                        diamond.style.animation = 'coinPileFade 0.5s ease-out forwards';
+                        setTimeout(() => { if (diamond.parentNode) diamond.parentNode.removeChild(diamond); }, 500);
+                    }
+                }, 5000);
+            }
+        }, 12000);
+    }
+
+    /**
+     * Collects a dropped Dogediamond into the player's balance.
+     * On the very first one ever obtained, shows the explainer popup.
+     */
+    collectDiamond(el) {
+        if (!el.parentNode || el.dataset.collected) return; // prevent double-collect
+        el.dataset.collected = 'true';
+        el.style.pointerEvents = 'none';
+
+        const isFirstEver = this.dogediamondsEverObtained === 0;
+        this.dogediamonds += 1;
+        this.dogediamondsEverObtained += 1;
+
+        this.playSound('longSparkle');
+
+        // Floating "+1" with a diamond
+        const rect = el.getBoundingClientRect();
+        const floatingCoins = document.getElementById('floating-coins');
+        if (floatingCoins) {
+            const fc = floatingCoins.getBoundingClientRect();
+            const text = document.createElement('div');
+            text.className = 'coin-pile-collected diamond-collected';
+            text.innerHTML = `+1 <img src="assets/general/diamond.webp" alt="" class="diamond-inline-icon">`;
+            text.style.left = (rect.left + rect.width / 2 - fc.left) + 'px';
+            text.style.top = (rect.top - fc.top) + 'px';
+            floatingCoins.appendChild(text);
+            setTimeout(() => { if (text.parentNode) text.parentNode.removeChild(text); }, 1200);
+        }
+
+        el.style.animation = 'coinPileCollect 0.3s ease-out forwards';
+        setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
+
+        this.updateDiamondCounter();
+        this.updateUI();
+
+        if (isFirstEver) {
+            this.showDiamondIntro();
+        }
+    }
+
+    /**
+     * Updates the Dogediamond counter (top-right of the left panel).
+     * Hidden until the player has obtained their first diamond.
+     */
+    updateDiamondCounter() {
+        const counter = document.getElementById('diamond-counter');
+        if (!counter) return;
+        const unlocked = this.dogediamondsEverObtained > 0;
+        counter.style.display = unlocked ? 'flex' : 'none';
+        const amountEl = document.getElementById('diamond-amount');
+        if (amountEl) amountEl.textContent = this.formatNumber(Math.floor(this.dogediamonds));
+    }
+
+    /** Opens the first-find Dogediamonds explainer popup. */
+    showDiamondIntro() {
+        const modal = document.getElementById('diamond-intro-modal');
+        if (!modal) return;
+        this.playSound('inventoryOpen');
+        modal.classList.add('active');
+    }
+
+    closeDiamondIntro() {
+        const modal = document.getElementById('diamond-intro-modal');
+        if (modal) modal.classList.remove('active');
+    }
+
+    /** Unlocks the 3rd Searchdoge upgrade slot for 1 Dogediamond. */
+    unlockSearchdogeSlot3() {
+        if (this.searchdogeSlot3Unlocked) return;
+        if (this.dogediamonds < 1) {
+            this.showNotification('Not enough Dogediamonds!');
+            return;
+        }
+        this.dogediamonds -= 1;
+        this.searchdogeSlot3Unlocked = true;
+        this.playSound('longSparkle');
+        this.showNotification('3rd Searchdoge slot unlocked!');
+        this.updateDiamondCounter();
+        this.updateUI();
+        if (window.uiManager) {
+            if (typeof window.uiManager.updateUpgradeContent === 'function') window.uiManager.updateUpgradeContent();
+            if (typeof window.uiManager.updateMobileUpgradesContent === 'function') window.uiManager.updateMobileUpgradesContent();
+        }
+    }
+
+    // =================== END DOGEDIAMONDS ===================
 
     /**
      * Rolls whether a dogebag should drop at the current threshold.
@@ -5513,6 +5676,7 @@ class DogeMinerGame {
         // Update dogecoin display
         document.getElementById('dogecoin-amount').textContent = this.formatNumber(Math.floor(this.dogecoins));
         document.getElementById('dps-amount').textContent = this.formatNumber(this.dps);
+        this.updateDiamondCounter();
 
         // Dynamic DPS logo positioning based on text length
         const dpsIcon = document.querySelector('.stat-item:nth-child(2) .stat-icon');

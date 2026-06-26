@@ -1184,6 +1184,23 @@ class UIManager {
         // Populate the 3 upgrade sections
         const upgradeSections = document.querySelectorAll('.upgrade-section');
         upgradeSections.forEach((section, index) => {
+            // The 3rd Searchdoge slot is gated behind a 1-Dogediamond purchase
+            if (index === 2 && !this.game.searchdogeSlot3Unlocked) {
+                const canAfford = (this.game.dogediamonds || 0) >= 1;
+                section.innerHTML = `
+                    <div class="searchdoge-slot-locked">
+                        <div class="slot-locked-title">🔒 3rd Searchdoge Slot</div>
+                        <div class="slot-locked-sub">Unlock a third Searchdoge to find more Helper Upgrades.</div>
+                        <button class="searchdoge-unlock-btn${canAfford ? '' : ' disabled'}"
+                                onclick="window.game.unlockSearchdogeSlot3()" ${canAfford ? '' : 'disabled'}>
+                            <img src="assets/general/diamond.webp" alt="Dogediamond">
+                            <span class="unlock-amount">1</span>
+                        </button>
+                    </div>
+                `;
+                section.classList.remove('has-upgrade');
+                return;
+            }
             if (index < displayUpgrades.length) {
                 const upgrade = displayUpgrades[index];
                 const canAfford = this.game.dogecoins >= upgrade.price;
@@ -2011,6 +2028,24 @@ class UIManager {
         let html = '<div class="mobile-upgrade-sections">';
 
         for (let i = 0; i < 3; i++) {
+            if (i === 2 && !this.game.searchdogeSlot3Unlocked) {
+                // The 3rd Searchdoge slot is gated behind a 1-Dogediamond purchase
+                const canAffordSlot = (this.game.dogediamonds || 0) >= 1;
+                html += `
+                    <div class="mobile-upgrade-section" data-section-index="2">
+                        <div class="searchdoge-slot-locked">
+                            <div class="slot-locked-title">🔒 3rd Searchdoge Slot</div>
+                            <div class="slot-locked-sub">Unlock a third Searchdoge to find more Helper Upgrades.</div>
+                            <button class="searchdoge-unlock-btn${canAffordSlot ? '' : ' disabled'}"
+                                    onclick="window.game.unlockSearchdogeSlot3()" ${canAffordSlot ? '' : 'disabled'}>
+                                <img src="assets/general/diamond.webp" alt="Dogediamond">
+                                <span class="unlock-amount">1</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                continue;
+            }
             if (i < displayUpgrades.length) {
                 const upgrade = displayUpgrades[i];
                 const canAfford = this.game.dogecoins >= upgrade.price;

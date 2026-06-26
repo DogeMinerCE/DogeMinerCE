@@ -679,6 +679,8 @@ function addDebugConsole() {
         <button onclick="game.mysteryBoxTimerRemaining = 0; game.startMysteryBoxTimer()">Skip Mystery Box Timer</button>
         <button onclick="game.spawnBonusCoin()">Spawn Bonus Coin</button>
         <button onclick="debugLevelUpBonusCoin()">Level up Bonus Coin</button>
+        <button onclick="game.createDiamondLoot()">Spawn Dogediamond</button>
+        <button onclick="game.dogediamonds += 5; game.dogediamondsEverObtained += 5; game.updateDiamondCounter(); game.updateUI();">+5 Dogediamonds</button>
         <button onclick="debugGrantAllPickaxes()">Grant all Pickaxes</button>
         <button onclick="debugGrantAllFortunes()">Grant all Fortunes</button>
         <button onclick="saveManager.repairSave()">Repair Save</button>

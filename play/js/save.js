@@ -268,6 +268,9 @@ class SaveManager {
             bonusCoinSeenLevel: this.game.bonusCoinSeenLevel || 0,
             bonusCoinBuffMultiplier: this.game.bonusCoinBuffMultiplier || 1,
             bonusCoinBuffEndTime: this.game.bonusCoinBuffEndTime || 0,
+            dogediamonds: this.game.dogediamonds || 0,
+            dogediamondsEverObtained: this.game.dogediamondsEverObtained || 0,
+            searchdogeSlot3Unlocked: this.game.searchdogeSlot3Unlocked || false,
             rocksBroken: this.game.rocksBroken,
             upgrades: this.game.upgrades || {},
             helperUpgradeLevels: this.game.helperUpgradeLevels || {},
@@ -368,6 +371,12 @@ class SaveManager {
         this.game.bonusCoinSeenLevel = saveData.bonusCoinSeenLevel || 0;
         this.game.bonusCoinBuffMultiplier = saveData.bonusCoinBuffMultiplier || 1;
         this.game.bonusCoinBuffEndTime = saveData.bonusCoinBuffEndTime || 0;
+
+        // Dogediamonds state
+        this.game.dogediamonds = saveData.dogediamonds || 0;
+        this.game.dogediamondsEverObtained = saveData.dogediamondsEverObtained || 0;
+        this.game.searchdogeSlot3Unlocked = saveData.searchdogeSlot3Unlocked || false;
+        if (typeof this.game.updateDiamondCounter === 'function') this.game.updateDiamondCounter();
 
         // Retroactive Mystery Box unlock for older saves
         if (!this.game.mysteryBoxObtained && Array.isArray(this.game.fortuneInventory)) {
@@ -1051,6 +1060,12 @@ class SaveManager {
                 this.game.bonusCoinBuffEndTime = 0;
                 if (typeof this.game._expireBonusCoinBuff === 'function') this.game._expireBonusCoinBuff();
                 if (typeof this.game._removeBonusCoinEl === 'function') this.game._removeBonusCoinEl();
+
+                // Reset Dogediamonds
+                this.game.dogediamonds = 0;
+                this.game.dogediamondsEverObtained = 0;
+                this.game.searchdogeSlot3Unlocked = false;
+                if (typeof this.game.updateDiamondCounter === 'function') this.game.updateDiamondCounter();
 
                 const mboxBtn = document.getElementById('mystery-box-btn');
                 if (mboxBtn) mboxBtn.style.display = 'none';
