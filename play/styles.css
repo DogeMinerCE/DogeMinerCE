@@ -883,14 +883,14 @@ body {
 }
 
 .diamond-loot img {
-    width: 46px;
+    width: 23px;
     height: auto;
     pointer-events: auto;
-    filter: drop-shadow(0 0 8px rgba(120, 210, 255, 0.95)) drop-shadow(2px 3px 4px rgba(0, 0, 0, 0.35));
+    filter: drop-shadow(0 0 4px rgba(120, 210, 255, 0.95)) drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.35));
 }
 
 .diamond-loot:hover img {
-    filter: drop-shadow(0 0 14px rgba(150, 225, 255, 1)) drop-shadow(2px 3px 4px rgba(0, 0, 0, 0.35));
+    filter: drop-shadow(0 0 7px rgba(150, 225, 255, 1)) drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.35));
 }
 
 /* Floating "+1 [diamond]" text shown on collect */
